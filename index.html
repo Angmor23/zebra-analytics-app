@@ -1,0 +1,25 @@
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zebra Analytics App</title>
+  </head>
+  <body>
+    <a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=c1b491bd74e84df4b313d39846f27907" target="_blank">Получить OAuth токен</a>
+    <script>
+      const clientId = 'c1b491bd74e84df4b313d39846f27907';
+      const token = 'AgAAAAAJRxVAAAXaQL0nU5LgOEaNsFnBl8nyczQ';
+      const counter = '53697103';
+
+      window.fetch(
+        `https://api-metrika.yandex.net/stat/v1/data?preset=sources_summary&id=${counter}`, {
+          headers: {
+            Authorization: `OAuth ${token}`
+          }
+        })
+      .then(r => r.json())
+      .then(metrikaApiJSON => console.log(metrikaApiJSON));
+    </script>
+  </body>
+</html>

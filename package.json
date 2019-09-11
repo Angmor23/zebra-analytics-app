@@ -1,0 +1,19 @@
+{
+  "name": "zebra-analytics-app",
+  "version": "0.0.0",
+  "description": "Statistics report generator ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Angmor23/zebra-analytics-app.git"
+  },
+  "author": "angmor23",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Angmor23/zebra-analytics-app/issues"
+  },
+  "homepage": "https://github.com/Angmor23/zebra-analytics-app#readme"
+}
