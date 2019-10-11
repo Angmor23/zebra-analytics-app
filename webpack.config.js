@@ -47,10 +47,6 @@ module.exports = (env, argv) => {
 								loader: 'postcss-loader',
 								options: {
 									config: {
-										/*
-                      Используем локальный конфиг
-                      Чтобы postcss не лез в конфиги @media-platform|@media-ui
-                    */
 										path: path.resolve('./postcss.config.js'),
 									},
 								},
