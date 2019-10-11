@@ -1,2 +1,2 @@
 # zebra-analytics-app
-Statistics report generator 
+Automated analytics report generator

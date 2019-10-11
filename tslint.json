@@ -1,0 +1,50 @@
+{
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended",
+		"tslint-config-airbnb",
+		"tslint-plugin-prettier",
+		"tslint-config-prettier",
+		"tslint-react"
+	],
+	"jsRules": {},
+	"rules": {
+		"prefer-array-literal": false,
+		"interface-name": [true, "always-prefix"],
+		"prettier": [true, "./prettier.config.js"],
+		"jsx-boolean-value": false,
+		"jsx-no-lambda": false,
+		"trailing-comma": [
+			true,
+			{
+				"multiline": {
+					"objects": "always",
+					"arrays": "always",
+					"functions": "never",
+					"typeLiterals": "always"
+				},
+				"singleline": "never",
+				"esSpecCompliant": true
+			}
+		],
+		"variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+		"rulesDirectory": ["tslint-plugin-prettier"],
+		"member-ordering": [false],
+		"object-literal-sort-keys": [true, "shorthand-first"],
+		"object-shorthand-properties-first": false,
+		"no-function-constructor-with-string-args": false,
+		"whitespace": [
+			true,
+			"check-branch",
+			"check-decl",
+			"check-operator",
+			"check-separator",
+			"check-type",
+			"check-typecast"
+		],
+		"import-name": false
+	},
+	"linterOptions": {
+		"exclude": ["node_modules", "**/*.d.ts"]
+	}
+}
