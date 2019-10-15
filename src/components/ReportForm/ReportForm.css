@@ -1,0 +1,27 @@
+fieldset {
+  border: 1px solid #ccc;
+
+  &:not(:last-child) {
+    margin: 20px 0;
+  }
+}
+
+.input {
+  box-sizing: border-box;
+  display: block;
+  margin: 10px 0;
+
+  &[type='text'] {
+    width: 100%;
+  }
+
+  &[type='date'] {
+    display: inline-block;
+  }
+}
+
+textarea.input {
+  height: 100px;
+  resize: none;
+  width: 100%;
+}
