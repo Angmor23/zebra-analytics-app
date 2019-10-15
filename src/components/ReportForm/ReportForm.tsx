@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -28,15 +29,16 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = props => {
             onChange={props.onChangeFormField}
           />
 
-          <fieldset>
-            <legend>Дата формирования</legend>
-            <input
-              className={s.input}
-              type="date"
-              name="created"
-              onChange={props.onChangeFormField}
-            />
-          </fieldset>
+          <TextField
+            id="created"
+            label="Дата формирования"
+            name="created"
+            type="date"
+            onChange={props.onChangeFormField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
 
           <fieldset>
             <legend>Контакты менеджера</legend>
@@ -71,15 +73,27 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = props => {
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend>Дата раскрытия отчета</legend>
-            <div className={s.input}>
-              <input type="date" name="opening" onChange={props.onChangeFormField} />
-            </div>
-          </fieldset>
+          <TextField
+            id="opening"
+            label="Дата раскрытия отчета"
+            name="opening"
+            type="date"
+            onChange={props.onChangeFormField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </form>
 
-        <button onClick={props.onSubmitOptions}>{saveButtonText}</button>
+        <Button
+          color="primary"
+          fullWidth
+          onClick={props.onSubmitOptions}
+          type="button"
+          variant="contained"
+        >
+          {saveButtonText}
+        </Button>
       </div>
     </Container>
   );
