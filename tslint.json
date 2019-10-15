@@ -9,6 +9,7 @@
 	],
 	"jsRules": {},
 	"rules": {
+		"no-console": [false, "log", "error"],
 		"prefer-array-literal": false,
 		"interface-name": [true, "always-prefix"],
 		"prettier": [true, "./prettier.config.js"],
