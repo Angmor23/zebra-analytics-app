@@ -12,7 +12,11 @@
 		"moduleResolution": "node",
 		"baseUrl": "./",
 		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true
+		"emitDecoratorMetadata": true,
+
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true
 	},
 	"files": ["declare.d.ts"],
 	"awesomeTypescriptLoaderOptions": {

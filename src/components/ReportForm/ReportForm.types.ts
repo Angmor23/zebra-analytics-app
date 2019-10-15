@@ -1,6 +1,6 @@
 export interface IReportFormProps {
   onChangeFormField: (
-    event: React.FormEvent<HTMLInputElement> | React.FormEvent<HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
   ) => void;
   onSubmitOptions: () => void;
 }

@@ -18,8 +18,11 @@
 	"author": "Pirogov Vladimir <v.e.pirogov@gmail.com> (https://github.com/Angmor23)",
 	"license": "UNLICENSED",
 	"devDependencies": {
+		"@material-ui/core": "^4.5.1",
+		"@material-ui/icons": "^4.5.1",
 		"@svgr/webpack": "^4.3.2",
 		"@types/classnames": "^2.2.9",
+		"@types/material-ui": "^0.21.7",
 		"@types/react": "^16.9.2",
 		"@types/react-dom": "^16.9.0",
 		"autoprefixer": "^9.6.1",

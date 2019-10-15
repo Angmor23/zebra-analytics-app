@@ -60,7 +60,6 @@ const App: React.FunctionComponent = () => {
 
   return (
     <Layout>
-      <h1>Генератор отчетов</h1>
       {token ? (
         saved && counter && dateFrom && dateTo ? (
           <Analytics data={{ counter, dateFrom, dateTo, token }} />

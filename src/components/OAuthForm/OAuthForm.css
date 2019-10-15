@@ -1,5 +1,20 @@
-.input {
-  box-sizing: border-box;
-  display: block;
-  margin: 10px 0;
+.root {
+  align-items: center;
+  flex-direction: column;
+  margin-top: 64px;
+  display: flex;
+}
+
+div.avatar {
+  background-color: #dc004e;
+  margin: 8px;
+}
+
+.form {
+  margin-top: 8px;
+  width: 100%;
+}
+
+button.submit {
+  margin: 24px 0 16px;
 }

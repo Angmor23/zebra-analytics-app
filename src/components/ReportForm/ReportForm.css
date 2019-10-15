@@ -1,3 +1,7 @@
+.root {
+  margin-top: 64px;
+}
+
 fieldset {
   border: 1px solid #ccc;
 

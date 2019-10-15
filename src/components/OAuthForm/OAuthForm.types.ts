@@ -1,4 +1,4 @@
 export interface IOAuthFormProps {
-  onChangeToken: (event: React.FormEvent<HTMLInputElement>) => void;
+  onChangeToken: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmitToken: (event: React.SyntheticEvent) => void;
 }
