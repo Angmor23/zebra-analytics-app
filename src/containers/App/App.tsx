@@ -9,6 +9,7 @@ const storage = window.localStorage;
 
 const App: React.FunctionComponent = () => {
   const defaultState: T.IAppState = {
+    lang: 'RU',
     saved: false,
     token: storage.getItem('token') || '',
   };
@@ -49,19 +50,18 @@ const App: React.FunctionComponent = () => {
   };
 
   const {
-    counter,
-    dateFrom,
-    dateTo,
-    // lang,
+    counter = '53697103',
+    token = 'AgAAAAAJRxVAAAXaQL0nU5LgOEaNsFnBl8nyczQ',
+    dateFrom = '2019-06-13',
+    dateTo = '2019-07-12',
     // reportName,
-    saved,
-    token,
+    // saved,
   } = appState;
-
+  // saved && reportName && counter && dateFrom && dateTo
   return (
     <Layout>
       {token ? (
-        saved && counter && dateFrom && dateTo ? (
+        true ? (
           <Analytics data={{ counter, dateFrom, dateTo, token }} />
         ) : (
           <ReportForm onChangeFormField={onChangeField} onSubmitOptions={onSubmitOptions} />

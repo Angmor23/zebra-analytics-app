@@ -1,31 +1,32 @@
 .root {
-  margin-top: 64px;
+  margin: 48px 0;
+  padding: 24px;
 }
 
-fieldset {
-  border: 1px solid #ccc;
-
-  &:not(:last-child) {
-    margin: 20px 0;
-  }
-}
-
-.input {
-  box-sizing: border-box;
+.formRow {
   display: block;
-  margin: 10px 0;
-
-  &[type='text'] {
-    width: 100%;
-  }
-
-  &[type='date'] {
-    display: inline-block;
-  }
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
-textarea.input {
-  height: 100px;
-  resize: none;
-  width: 100%;
+.formRowFlex {
+  display: flex;
+}
+
+.formRowFlexEnd {
+  display: flex;
+  justify-content: flex-end;
+}
+
+div.formCell {
+  flex-grow: 1;
+  margin: 0 12px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
 }

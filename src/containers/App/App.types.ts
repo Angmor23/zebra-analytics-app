@@ -4,7 +4,7 @@ export interface IAppState {
   created?: string;
   dateFrom?: string;
   dateTo?: string;
-  lang?: string;
+  lang: 'RU' | 'EN';
   opening?: string;
   reportName?: string;
   token: string;
