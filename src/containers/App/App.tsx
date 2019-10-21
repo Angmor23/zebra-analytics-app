@@ -39,6 +39,7 @@ const App: React.FunctionComponent = () => {
     setAppState({
       ...appState,
       ...field,
+      saved: false,
     });
   };
 
@@ -50,19 +51,19 @@ const App: React.FunctionComponent = () => {
   };
 
   const {
-    counter = '53697103',
-    token = 'AgAAAAAJRxVAAAXaQL0nU5LgOEaNsFnBl8nyczQ',
-    dateFrom = '2019-06-13',
-    dateTo = '2019-07-12',
-    // reportName,
-    // saved,
+    counter, // = '53697103',
+    token, // = 'AgAAAAAJRxVAAAXaQL0nU5LgOEaNsFnBl8nyczQ',
+    dateFrom, // = '2019-06-13',
+    dateTo, // = '2019-07-12',
+    reportName, // = 'Отчет об эффективности русскоязычной версии годового отчета ПАО «Газпром нефть» за 2018 год',
+    saved,
   } = appState;
-  // saved && reportName && counter && dateFrom && dateTo
+
   return (
     <Layout>
       {token ? (
-        true ? (
-          <Analytics data={{ counter, dateFrom, dateTo, token }} />
+        saved && reportName && counter && dateFrom && dateTo ? (
+          <Analytics data={{ counter, dateFrom, dateTo, token, reportName }} />
         ) : (
           <ReportForm onChangeFormField={onChangeField} onSubmitOptions={onSubmitOptions} />
         )

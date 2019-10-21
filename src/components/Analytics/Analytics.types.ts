@@ -4,7 +4,7 @@ export interface IAnalyticsProps {
     dateFrom: string;
     dateTo: string;
     // lang: string;
-    // reportName: string;
+    reportName: string;
     token: string;
   };
 }
