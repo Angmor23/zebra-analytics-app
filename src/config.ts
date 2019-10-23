@@ -38,7 +38,7 @@ export const config = {
       name: '1. Посещаемость',
       subParts: [
         {
-          filters: '',
+          filters: '&accuracy=full',
           metrics: [
             'ym:s:users',
             'ym:s:visits',
@@ -50,7 +50,7 @@ export const config = {
           name: '1.1 Все посетители',
         },
         {
-          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
+          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3&accuracy=full',
           metrics: [
             'ym:s:users',
             'ym:s:visits',
