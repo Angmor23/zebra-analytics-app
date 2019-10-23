@@ -117,7 +117,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = props => {
                 <TableBody>
                   {subPart.metrics.map((metric, k: number) => {
                     // Number of elements in current row
-                    const length = thisMetrics.length;
+                    const length = thisMetrics[k].length;
 
                     // Sum of all elements in current row
                     const total = thisMetrics[k].reduce((sum, cur) => {
