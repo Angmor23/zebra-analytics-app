@@ -14,7 +14,6 @@ const { api, parts } = config;
 const state: T.IVisitsState = {
   dataArray: [],
   loaded: false,
-  queryArray: [],
 };
 
 const Visits: React.FunctionComponent<T.IVisitsProps> = props => {
@@ -68,22 +67,22 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = props => {
         .then(apiJSON => {
           const isLast = index === indexOfLast;
           const data: T.IApiDataItem[] = apiJSON.data;
-          const query: T.IApiQuery = apiJSON.query;
 
           visitState.dataArray.push(data[0]);
-          visitState.queryArray.push(query);
 
-          if (isLast) {
-            setVisitState({
-              dataArray: [...visitState.dataArray],
-              loaded: true,
-              queryArray: [...visitState.queryArray],
-            });
-          } else {
+          setVisitState(prevState => {
+            if (isLast) {
+              return {
+                dataArray: [...visitState.dataArray],
+                loaded: true,
+              };
+            }
+
             index += 1;
-
             getData(subParts[index].metrics, subParts[index].filters);
-          }
+
+            return prevState;
+          });
         })
         .catch(error => {
           window.console.error(error);

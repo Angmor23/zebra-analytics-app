@@ -1,5 +1,5 @@
-import { IApiDataItem, IApiQuery } from '../../types';
-export { IApiDataItem, IApiQuery } from '../../types';
+import { IApiDataItem } from '../../types';
+export { IApiDataItem } from '../../types';
 
 export interface IVisitsProps {
   data: {
@@ -14,5 +14,4 @@ export interface IVisitsProps {
 export interface IVisitsState {
   dataArray: IApiDataItem[];
   loaded: boolean;
-  queryArray: IApiQuery[];
 }

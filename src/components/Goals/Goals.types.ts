@@ -1,13 +1,12 @@
 import { IGoal } from '../../containers/App/App.types';
 
-export interface IAnalyticsProps {
+export interface IGoalsProps {
   data: {
     counter: string;
     dateFrom: string;
     dateTo: string;
-    // lang: string;
+    goals: IGoal[];
     reportName: string;
     token: string;
-    goals: IGoal[];
   };
 }

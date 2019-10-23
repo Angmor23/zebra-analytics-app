@@ -1,4 +1,5 @@
 export interface IAppState {
+  goals: IGoal[];
   contacts?: string;
   counter?: string;
   created?: string;
@@ -9,4 +10,11 @@ export interface IAppState {
   reportName?: string;
   token: string;
   saved: boolean;
+}
+
+export interface IGoal {
+  [key: string]: number | string | null;
+  i: number;
+  id: string | null;
+  name: string | null;
 }

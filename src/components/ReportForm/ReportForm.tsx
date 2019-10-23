@@ -13,7 +13,7 @@ import { config } from '../../config';
 import * as s from './ReportForm.css';
 import * as T from './ReportForm.types';
 
-const { saveButtonText } = config;
+const { saveButtonText, addGoalButtonText } = config;
 const today = new Date();
 const todayFormated = today.toISOString().split('T')[0];
 
@@ -70,17 +70,21 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = props => {
             </RadioGroup>
           </div>
 
-          <TextField
-            fullWidth
-            id="counter"
-            label="Номер счетчика"
-            margin="normal"
-            name="counter"
-            onChange={props.onChangeFormField}
-            required
-            variant="outlined"
-          />
+          {/* Номер счетчика */}
+          <div className={s.formRow}>
+            <TextField
+              fullWidth
+              id="counter"
+              label="Номер счетчика"
+              margin="normal"
+              name="counter"
+              onChange={props.onChangeFormField}
+              required
+              variant="outlined"
+            />
+          </div>
 
+          {/* Даты начала формирования, конца формирования и раскрытия отчета */}
           <div className={classNames(s.formRow, s.formRowFlex)}>
             <TextField
               className={s.formCell}
@@ -120,6 +124,38 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = props => {
               variant="outlined"
             />
           </div>
+
+          {/* Цели */}
+          {props.goals.map(goal => {
+            return (
+              <div key={goal.i} className={classNames(s.formRow, s.formRowFlex)}>
+                <TextField
+                  className={s.formCell}
+                  id={`${goal.i}_goalName`}
+                  label={`Название цели ${goal.i + 1}`}
+                  margin="normal"
+                  name="name_goal"
+                  onChange={props.onChangeGoal}
+                  type="text"
+                  variant="outlined"
+                />
+                <TextField
+                  className={s.formCell}
+                  id={`${goal.i}_goalID`}
+                  label={`ID ${goal.i + 1}`}
+                  margin="normal"
+                  name="id_goal"
+                  onChange={props.onChangeGoal}
+                  type="text"
+                  variant="outlined"
+                />
+              </div>
+            );
+          })}
+
+          <Button fullWidth onClick={props.addGoal} type="button" variant="contained">
+            {addGoalButtonText}
+          </Button>
 
           <div className={classNames(s.formRow, s.formRowFlexEnd)}>
             <Button
