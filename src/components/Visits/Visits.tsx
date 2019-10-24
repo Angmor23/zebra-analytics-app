@@ -6,90 +6,55 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
+import { aSum, fetchAPI, getValueByMetric } from '../../utils';
 import * as s from './Visits.css';
 import * as T from './Visits.types';
 
-const { api, parts } = config;
+const { parts } = config;
 
-const state: T.IVisitsState = {
-  dataArray: [],
-  loaded: false,
-};
-
-const Visits: React.FunctionComponent<T.IVisitsProps> = props => {
-  const { counter, dateFrom, dateTo, token } = props.data;
+const Visits: React.FunctionComponent<T.IVisitsProps> = ({ data }) => {
+  const { counter, dateFrom, dateTo, token } = data;
   const thisPart = parts.visits;
-  const { subParts } = thisPart;
+  const { subParts, timeout = 0 } = thisPart;
   const glossary: { [key: string]: string } = config.glossary;
-
-  const getFormatTime = (sec: number): string => {
-    const min = sec / 60;
-    const rounded = min.toFixed(2);
-    const mmss = rounded.split('.');
-    const formated = (Number(mmss[1]) * 0.6).toFixed(0);
-
-    return `${mmss[0]}:${formated}`;
-  };
-
-  const getValueByMetric = (n: number, value: number, metric: string): string => {
-    let result = String(value);
-
-    if (metric === 'ym:s:avgVisitDurationSeconds') {
-      result = getFormatTime(value / n);
-    }
-
-    if (['ym:s:pageDepth', 'ym:s:bounceRate'].indexOf(metric) > -1) {
-      result = (value / n).toFixed(2).replace('.', ',');
-    }
-
-    return result;
-  };
-
-  const getApiURL = (mtrs: string[], fltrs: string) => {
-    return `${api}?id=${counter}&date1=${dateFrom}&date2=${dateTo}&metrics=${mtrs.join()}&filters=${fltrs}`;
-  };
-
-  const [visitState, setVisitState] = React.useState(state);
+  const [visitState, setVisitState] = React.useState<T.IVisitsState>({
+    dataArray: [],
+    loaded: false,
+  });
 
   React.useEffect(() => {
-    let index = 0;
-    const indexOfLast = subParts.length - 1;
-    const getData = (mtrs: string[], fltrs: string) => {
-      window
-        .fetch(getApiURL(mtrs, fltrs), {
-          headers: {
-            Authorization: `OAuth ${token}`,
-          },
-        })
-        .then(response => {
-          return response.json();
-        })
-        .then(apiJSON => {
-          const isLast = index === indexOfLast;
-          const data: T.IApiDataItem[] = apiJSON.data;
+    setTimeout(() => {
+      let index = 0;
+      const indexOfLast = subParts.length - 1;
+      const getData = (m: string[], f: string) => {
+        fetchAPI(counter, dateFrom, dateTo, '', f, m, token)
+          .then(apiJSON => {
+            const isLast = index === indexOfLast;
+            const apiData: T.IApiDataItem[] = apiJSON.data;
 
-          visitState.dataArray.push(data[0]);
+            visitState.dataArray.push(apiData[0]);
 
-          setVisitState(prevState => {
-            if (isLast) {
-              return {
-                dataArray: [...visitState.dataArray],
-                loaded: true,
-              };
-            }
+            setVisitState(prevState => {
+              if (isLast) {
+                return {
+                  dataArray: [...visitState.dataArray],
+                  loaded: true,
+                };
+              }
 
-            index += 1;
-            getData(subParts[index].metrics, subParts[index].filters);
+              index += 1;
+              getData(subParts[index].metrics, subParts[index].filters);
 
-            return prevState;
+              return prevState;
+            });
+          })
+          .catch(error => {
+            window.console.error(error);
           });
-        })
-        .catch(error => {
-          window.console.error(error);
-        });
-    };
+      };
 
-    getData(subParts[index].metrics, subParts[index].filters);
+      getData(subParts[index].metrics, subParts[index].filters);
+    }, timeout);
   }, []);
 
   return (
@@ -119,9 +84,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = props => {
                     const length = thisMetrics[k].length;
 
                     // Sum of all elements in current row
-                    const total = thisMetrics[k].reduce((sum, cur) => {
-                      return sum + cur;
-                    }, 0);
+                    const total = aSum(thisMetrics[k]);
 
                     return (
                       <TableRow key={metric + i}>

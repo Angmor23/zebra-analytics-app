@@ -7,8 +7,8 @@ import Visits from '../Visits';
 import * as s from './Analytics.css';
 import * as T from './Analytics.types';
 
-const Analytics: React.FunctionComponent<T.IAnalyticsProps> = props => {
-  const { reportName } = props.data;
+const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ data }) => {
+  const { reportName } = data;
 
   return (
     <Container maxWidth="md">
@@ -17,9 +17,9 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = props => {
           {reportName}
         </Typography>
 
-        <Visits data={{ ...props.data }} />
+        <Visits data={{ ...data }} />
 
-        <Goals data={{ ...props.data }} />
+        {Boolean(data.goals.length) && <Goals data={{ ...data }} />}
       </Paper>
     </Container>
   );

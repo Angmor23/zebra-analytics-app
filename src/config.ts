@@ -1,12 +1,12 @@
 export const config = {
   addGoalButtonText: 'Добавить цель',
-  api: 'https://api-metrika.yandex.net/stat/v1/data/bytime',
+  api: 'https://api-metrika.yandex.net/stat/v1/data/bytime?accuracy=full&group=year',
   clientId: 'c1b491bd74e84df4b313d39846f27907',
   getTokenText: 'Нет OAuth токена?',
   glossary: {
     'ym:s:avgVisitDurationSeconds': 'Время на сайте (минуты)',
     'ym:s:bounceRate': 'Отказы (%)',
-    'ym:s:goal<goal_id>conversionRate': 'Конверсия',
+    'ym:s:goal<goal_id>conversionRate': 'Конверсия (%)',
     'ym:s:goal<goal_id>reaches': 'Достижения цели',
     'ym:s:goal<goal_id>visits': 'Целевые визиты',
     'ym:s:pageDepth': 'Глубина просмотра (страницы)',
@@ -19,8 +19,10 @@ export const config = {
   parts: {
     goals: {
       name: 'Цели',
+      /* !!! Цели имеют только одни subPart, что бы избежать вложеных циклов !!! */
       subParts: [
         {
+          filters: '',
           metrics: [
             'ym:s:goal<goal_id>conversionRate',
             'ym:s:goal<goal_id>reaches',
@@ -29,6 +31,7 @@ export const config = {
           name: 'Все пользователи',
         },
       ],
+      timeout: 1000,
     },
     technology: {
       name: 'Технологии',
@@ -43,7 +46,7 @@ export const config = {
       name: 'Посещаемость',
       subParts: [
         {
-          filters: '&accuracy=full',
+          filters: '',
           metrics: [
             'ym:s:users',
             'ym:s:visits',
@@ -55,7 +58,7 @@ export const config = {
           name: 'Все посетители',
         },
         {
-          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3&accuracy=full',
+          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
           metrics: [
             'ym:s:users',
             'ym:s:visits',
@@ -67,6 +70,7 @@ export const config = {
           name: 'Ядро',
         },
       ],
+      timeout: 0,
     },
   },
   respType: 'token',

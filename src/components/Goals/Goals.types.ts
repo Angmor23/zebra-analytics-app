@@ -1,4 +1,7 @@
 import { IGoal } from '../../containers/App/App.types';
+export { IGoal } from '../../containers/App/App.types';
+import { IApiDataItem } from '../../types';
+export { IApiDataItem } from '../../types';
 
 export interface IGoalsProps {
   data: {
@@ -9,4 +12,9 @@ export interface IGoalsProps {
     reportName: string;
     token: string;
   };
+}
+
+export interface IGoalsState {
+  loaded: boolean;
+  dataArray: IApiDataItem[];
 }
