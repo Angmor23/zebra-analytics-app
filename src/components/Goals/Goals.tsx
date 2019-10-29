@@ -1,3 +1,4 @@
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -28,7 +29,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
       const indexOfLast = goals.length - 1;
       const { metrics, filters } = subParts[0];
       const getData = (g: T.IGoal) => {
-        fetchAPI(counter, dateFrom, dateTo, `&goal_id=${g.id}`, filters, metrics, token)
+        fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${g.id}`, filters, metrics, token)
           .then(apiJSON => {
             const isLast = index === indexOfLast;
             const apiData: T.IApiDataItem[] = apiJSON.data;
@@ -60,7 +61,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
 
   return (
     <React.Fragment>
-      {state.loaded && (
+      {state.loaded ? (
         <section>
           <Typography className={s.caption} component="h2" variant="h6">
             {thisPart.name}
@@ -102,6 +103,8 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
             );
           })}
         </section>
+      ) : (
+        <LinearProgress />
       )}
     </React.Fragment>
   );

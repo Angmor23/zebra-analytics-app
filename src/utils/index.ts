@@ -11,6 +11,7 @@ export const aSum = (a: number[]): number => {
 };
 
 export const fetchAPI = async (
+  api: string,
   counter: string,
   dateFrom: string,
   dateTo: string,
@@ -19,10 +20,10 @@ export const fetchAPI = async (
   metrics: string[],
   token: string
 ) => {
+  // По-умолчанию берем url из конфига, но в редких кейсах (популярные страницы) нужно передать иной url
+  const apiUrl = api || config.api;
   const response = await window.fetch(
-    `${
-      config.api
-    }&id=${counter}&date1=${dateFrom}&date2=${dateTo}&metrics=${metrics.join()}&filters=${filters}${extraParams}`,
+    `${apiUrl}&id=${counter}&date1=${dateFrom}&date2=${dateTo}&metrics=${metrics.join()}&filters=${filters}${extraParams}`,
     {
       headers: {
         Authorization: `OAuth ${token}`,

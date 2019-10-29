@@ -13,8 +13,7 @@ export interface IAppState {
 }
 
 export interface IGoal {
-  [key: string]: number | string | null;
-  i: number;
+  [key: string]: string | null;
   id: string | null;
   name: string | null;
 }

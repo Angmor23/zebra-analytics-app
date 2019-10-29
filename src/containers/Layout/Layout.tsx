@@ -1,7 +1,8 @@
 import * as React from 'react';
+import * as s from './Layout.css';
 
 const Layout: React.FunctionComponent = props => {
-  return <main>{props.children}</main>;
+  return <main className={s.root}>{props.children}</main>;
 };
 
 export default Layout;

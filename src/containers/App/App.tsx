@@ -15,16 +15,16 @@ const App: React.FunctionComponent = () => {
     token: storage.getItem('token') || '',
   };
 
-  const [appState, setAppState] = React.useState({ ...defaultState });
+  const [state, setState] = React.useState({ ...defaultState });
 
   const onChangeForm = (event: React.FormEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
-    appState.token = value;
+    state.token = value;
   };
 
   const onSubmitToken = () => {
-    setAppState({ ...appState });
-    storage.setItem('token', appState.token);
+    setState({ ...state });
+    storage.setItem('token', state.token);
   };
 
   const onChangeField = (
@@ -37,27 +37,26 @@ const App: React.FunctionComponent = () => {
 
     field[name] = value;
 
-    setAppState({
-      ...appState,
+    setState({
+      ...state,
       ...field,
       saved: false,
     });
   };
 
   const onSubmitOptions = () => {
-    setAppState({
-      ...appState,
+    setState({
+      ...state,
       saved: true,
     });
   };
 
   const addGoal = () => {
-    setAppState({
-      ...appState,
+    setState({
+      ...state,
       goals: [
-        ...appState.goals,
+        ...state.goals,
         {
-          i: appState.goals.length,
           id: null,
           name: null,
         },
@@ -65,10 +64,18 @@ const App: React.FunctionComponent = () => {
     });
   };
 
+  const delGoal = (event: React.MouseEvent, i: number) => {
+    event.nativeEvent.preventDefault();
+    const tmpState = { ...state };
+    delete tmpState.goals[i];
+    tmpState.goals = tmpState.goals.filter(goal => Boolean(goal));
+    setState({ ...tmpState });
+  };
+
   const onChangeGoal = (
     event: React.FormEvent<HTMLInputElement> | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    const tempState = { ...appState };
+    const tempState = { ...state };
     const { value, id, name } = event.currentTarget;
     const index = id && Number(id.split('_')[0]);
     const key = name && name.split('_')[0];
@@ -77,7 +84,7 @@ const App: React.FunctionComponent = () => {
       tempState.goals[index][key] = value;
     }
 
-    setAppState({ ...tempState });
+    setState({ ...tempState });
   };
 
   const {
@@ -88,7 +95,7 @@ const App: React.FunctionComponent = () => {
     reportName, // = 'Отчет об эффективности русскоязычной версии годового отчета ПАО «Газпром нефть» за 2018 год',
     saved,
     goals,
-  } = appState;
+  } = state;
 
   return (
     <Layout>
@@ -100,7 +107,8 @@ const App: React.FunctionComponent = () => {
             onChangeFormField={onChangeField}
             onSubmitOptions={onSubmitOptions}
             addGoal={addGoal}
-            goals={appState.goals}
+            delGoal={delGoal}
+            goals={state.goals}
             onChangeGoal={onChangeGoal}
           />
         )

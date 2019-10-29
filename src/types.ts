@@ -1,7 +1,8 @@
 export interface IApiDataItem {
+  dimensions: IDimensions[];
   metrics: number[][];
 }
 
-export interface IApiQuery {
-  metrics: string[];
+interface IDimensions {
+  name: string;
 }

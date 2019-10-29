@@ -30,3 +30,20 @@ div.formCell {
     margin-right: 0;
   }
 }
+
+.del_row {
+  border: 0;
+  background: 0;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.8);
+  }
+
+  & svg {
+    fill: red;
+  }
+}

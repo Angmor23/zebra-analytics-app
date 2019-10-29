@@ -33,6 +33,24 @@ export const config = {
       ],
       timeout: 1000,
     },
+    popular: {
+      name: 'Популярные страницы',
+      subParts: [
+        {
+          dimensions: ['ym:pv:title', 'ym:pv:URLHash'],
+          filters: '',
+          metrics: ['ym:pv:pageviews'],
+          name: 'Все пользователи',
+        },
+        {
+          dimensions: ['ym:pv:title', 'ym:pv:URLHash'],
+          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
+          metrics: ['ym:pv:pageviews'],
+          name: 'Ядро',
+        },
+      ],
+      timeout: 2000,
+    },
     technology: {
       name: 'Технологии',
     },
@@ -73,6 +91,7 @@ export const config = {
       timeout: 0,
     },
   },
+  popularPageRows: 10,
   respType: 'token',
   saveButtonText: 'OK',
 };

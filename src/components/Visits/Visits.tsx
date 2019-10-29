@@ -1,3 +1,4 @@
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -27,7 +28,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ data }) => {
       let index = 0;
       const indexOfLast = subParts.length - 1;
       const getData = (m: string[], f: string) => {
-        fetchAPI(counter, dateFrom, dateTo, '', f, m, token)
+        fetchAPI('', counter, dateFrom, dateTo, '', f, m, token)
           .then(apiJSON => {
             const isLast = index === indexOfLast;
             const apiData: T.IApiDataItem[] = apiJSON.data;
@@ -99,7 +100,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ data }) => {
           })}
         </React.Fragment>
       ) : (
-        <div>Loading</div>
+        <LinearProgress />
       )}
     </section>
   );
