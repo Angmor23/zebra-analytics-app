@@ -1,8 +1,14 @@
-.caption {
+.caption,
+.loader {
   margin: 24px 0 !important;
 }
 
 .bold {
   font-weight: 600;
   white-space: nowrap;
+}
+
+.error {
+  color: red;
+  margin: 24px 0;
 }

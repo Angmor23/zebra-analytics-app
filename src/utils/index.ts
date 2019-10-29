@@ -1,7 +1,9 @@
 import { config } from '../config';
 
-const getFormatTime = (sec: number): string => {
-  return `${Math.floor(sec / 60)}:${Math.floor(sec % 60)}`;
+const getFormatTime = (time: number): string => {
+  const min = Math.floor(time / 60);
+  const sec = String(Math.floor(time % 60)).padStart(2, '0');
+  return `${min}:${sec}`;
 };
 
 export const aSum = (a: number[]): number => {

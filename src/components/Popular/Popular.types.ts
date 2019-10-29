@@ -8,8 +8,9 @@ export interface IPopularProps {
 }
 
 export interface IPopularState {
-  loaded: boolean;
   dataArray: IDataItem[][];
+  error: string | null;
+  loaded: boolean;
 }
 
 export interface IDataItem {

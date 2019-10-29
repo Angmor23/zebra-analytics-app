@@ -14,4 +14,5 @@ export interface IVisitsProps {
 export interface IVisitsState {
   dataArray: IApiDataItem[];
   loaded: boolean;
+  error: string | null;
 }

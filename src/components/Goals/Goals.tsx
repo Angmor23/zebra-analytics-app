@@ -20,6 +20,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.IGoalsState>({
     dataArray: [],
+    error: null,
     loaded: false,
   });
 
@@ -40,6 +41,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
               if (isLast) {
                 return {
                   dataArray: [...state.dataArray],
+                  error: null,
                   loaded: true,
                 };
               }
@@ -52,6 +54,11 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
           })
           .catch(error => {
             window.console.error(error);
+            setState({
+              ...state,
+              error: `Ошибка при загрузке таблицы "${thisPart.name}"`,
+              loaded: true,
+            });
           });
       };
 
@@ -62,49 +69,56 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
   return (
     <React.Fragment>
       {state.loaded ? (
-        <section>
-          <Typography className={s.caption} component="h2" variant="h6">
-            {thisPart.name}
-          </Typography>
+        !state.error ? (
+          <section>
+            <Typography className={s.caption} component="h2" variant="h6">
+              {thisPart.name}
+            </Typography>
 
-          {thisPart.subParts.map(subPart => {
-            return (
-              <Table key={subPart.name}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Цель</TableCell>
-                    {/* Выводим названия столбцов по словарю метрик: */
-                    subPart.metrics.map(metric => {
-                      return <TableCell key={metric}>{glossary[metric]}</TableCell>;
+            {thisPart.subParts.map(subPart => {
+              return (
+                <Table key={subPart.name}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Цель</TableCell>
+                      {/* Выводим названия столбцов по словарю метрик: */
+                      subPart.metrics.map(metric => {
+                        return <TableCell key={metric}>{glossary[metric]}</TableCell>;
+                      })}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {/* Выводим строку цели, сначала название цели, а затем знацения метрик */
+                    goals.map((goal, i: number) => {
+                      return (
+                        <TableRow key={i}>
+                          <TableCell>{goal.name}</TableCell>
+
+                          {/* Заполняем ячейки суммой значений (длина массива зависит от группировки по времени) */
+                          state.dataArray[i].metrics.map((metric, k: number) => {
+                            return (
+                              <TableCell key={k}>
+                                {getValueByMetric(metric.length, aSum(metric), subPart.metrics[k])}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
                     })}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {/* Выводим строку цели, сначала название цели, а затем знацения метрик */
-                  goals.map((goal, i: number) => {
-                    return (
-                      <TableRow key={i}>
-                        <TableCell>{goal.name}</TableCell>
-
-                        {/* Заполняем ячейки суммой значений (длина массива зависит от группировки по времени) */
-                        state.dataArray[i].metrics.map((metric, k: number) => {
-                          return (
-                            <TableCell key={k}>
-                              {getValueByMetric(metric.length, aSum(metric), subPart.metrics[k])}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            );
-          })}
-        </section>
+                  </TableBody>
+                </Table>
+              );
+            })}
+          </section>
+        ) : (
+          <div className={s.error}>{state.error}</div>
+        )
       ) : (
-        <LinearProgress />
+        <div className={s.loader}>
+          Загрзка таблицы {thisPart.name}
+          <LinearProgress />
+        </div>
       )}
     </React.Fragment>
   );

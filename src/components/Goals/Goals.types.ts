@@ -16,5 +16,6 @@ export interface IGoalsProps {
 
 export interface IGoalsState {
   loaded: boolean;
+  error: string | null;
   dataArray: IApiDataItem[];
 }

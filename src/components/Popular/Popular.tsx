@@ -19,6 +19,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.IPopularState>({
     dataArray: [],
+    error: null,
     loaded: false,
   });
 
@@ -47,6 +48,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
               if (isLast) {
                 return {
                   dataArray: [...state.dataArray],
+                  error: null,
                   loaded: true,
                 };
               }
@@ -59,6 +61,11 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
           })
           .catch(error => {
             window.console.error(error);
+            setState({
+              ...state,
+              error: `Ошибка при загрузке таблицы "${thisPart.name}"`,
+              loaded: true,
+            });
           });
       };
 
@@ -69,42 +76,49 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
   return (
     <React.Fragment>
       {state.loaded ? (
-        <section>
-          <Typography className={s.caption} component="h2" variant="h6">
-            {thisPart.name}
-          </Typography>
-          {thisPart.subParts.map((subPart, n: number) => {
-            return (
-              <Table key={`${thisPart.name}_${subPart.name}`}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell>Страница</TableCell>
-                    <TableCell>
-                      <div className={s.bold}>{subPart.name}</div>
-                      Просмотров
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+        !state.error ? (
+          <section>
+            <Typography className={s.caption} component="h2" variant="h6">
+              {thisPart.name}
+            </Typography>
+            {thisPart.subParts.map((subPart, n: number) => {
+              return (
+                <Table key={`${thisPart.name}_${subPart.name}`}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>#</TableCell>
+                      <TableCell>Страница</TableCell>
+                      <TableCell>
+                        <div className={s.bold}>{subPart.name}</div>
+                        Просмотров
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody>
-                  {/* Выводим строки популярных страниц */
-                  state.dataArray[n].map((dataItem, i: number) => {
-                    return (
-                      <TableRow key={i}>
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>{dataItem.dimensions[0].name}</TableCell>
-                        <TableCell>{aSum(dataItem.metrics)}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            );
-          })}
-        </section>
+                  <TableBody>
+                    {/* Выводим строки популярных страниц */
+                    state.dataArray[n].map((dataItem, i: number) => {
+                      return (
+                        <TableRow key={i}>
+                          <TableCell>{i + 1}</TableCell>
+                          <TableCell>{dataItem.dimensions[0].name}</TableCell>
+                          <TableCell>{aSum(dataItem.metrics)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              );
+            })}
+          </section>
+        ) : (
+          <div className={s.error}>{state.error}</div>
+        )
       ) : (
-        <LinearProgress />
+        <div className={s.loader}>
+          Загрзка таблицы {thisPart.name}
+          <LinearProgress />
+        </div>
       )}
     </React.Fragment>
   );
