@@ -18,6 +18,26 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ data }) => {
           {reportName}
         </Typography>
 
+        <section className={s.lead}>
+          <Typography component="h2" variant="h6">
+            Введение
+          </Typography>
+
+          <Typography component="p" variant="body1">
+            • Отчет: {reportName}
+            <br />
+            • Данные отчета
+            <br />
+            — основаны на обобщенных результатах систем анализа пользовательской активности Яндекс
+            Метрика.
+            <br />— представлены за: с {dateFrom} по {dateTo}.<br />
+            — представлены в формате «как есть» без обработки, если не указано иное.
+            <br />
+            • Автор: АйТи-бюро «Зебра».
+            <br />• Тип отчета: базовый.
+          </Typography>
+        </section>
+
         <Visits data={{ ...data }} />
 
         {Boolean(data.goals.length) && <Goals data={{ ...data }} />}
