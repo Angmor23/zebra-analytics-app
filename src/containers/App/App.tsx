@@ -9,10 +9,18 @@ const storage = window.localStorage;
 
 const App: React.FunctionComponent = () => {
   const defaultState: T.IAppState = {
+    contacts: '',
+    counter: '',
+    created: '',
+    dateFrom: '',
+    dateTo: '',
     goals: [],
     lang: 'RU',
+    opening: '',
+    reportName: '',
     saved: false,
     token: storage.getItem('token') || '',
+    urlFilter: '',
   };
 
   const [state, setState] = React.useState({ ...defaultState });
@@ -100,18 +108,20 @@ const App: React.FunctionComponent = () => {
   return (
     <Layout>
       {token ? (
-        saved && reportName && counter && dateFrom && dateTo ? (
-          <Analytics data={{ counter, dateFrom, dateTo, token, reportName, goals }} />
-        ) : (
+        <React.Fragment>
           <ReportForm
             onChangeFormField={onChangeField}
             onSubmitOptions={onSubmitOptions}
             addGoal={addGoal}
             delGoal={delGoal}
-            goals={state.goals}
+            goals={goals}
             onChangeGoal={onChangeGoal}
           />
-        )
+
+          {saved && reportName && counter && dateFrom && dateTo && (
+            <Analytics appState={{ ...state }} />
+          )}
+        </React.Fragment>
       ) : (
         <OAuthForm onChangeToken={onChangeForm} onSubmitToken={onSubmitToken} />
       )}

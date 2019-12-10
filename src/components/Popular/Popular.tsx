@@ -13,8 +13,8 @@ import * as T from './Popular.types';
 
 const { parts, popularPageRows } = config;
 
-const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
-  const { counter, dateFrom, dateTo, token } = data;
+const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
+  const { counter, dateFrom, dateTo, token, urlFilter } = appState;
   const thisPart = parts.popular;
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.IPopularState>({
@@ -25,21 +25,28 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      let index = 0;
-      const indexOfLast = subParts.length - 1;
-      const getData = (metrics: string[], dimensions: string[]) => {
+      subParts.forEach((subPart, i) => {
+        let filters = '';
+        if (subPart.filters && urlFilter) {
+          filters = `${subPart.filters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (!subPart.filters && urlFilter) {
+          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (subPart.filters && !urlFilter) {
+          filters = subPart.filters;
+        }
+
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
           counter,
           dateFrom,
           dateTo,
-          `&dimensions=${dimensions.join()}`,
-          '',
-          metrics,
+          `&dimensions=${subPart.dimensions.join()}`,
+          filters,
+          subPart.metrics,
           token
         )
           .then(apiJSON => {
-            const isLast = index === indexOfLast;
+            const isLast = i === subParts.length - 1;
             const apiData: T.IDataItem[] = apiJSON.data.slice(0, popularPageRows);
 
             state.dataArray.push(apiData);
@@ -53,9 +60,6 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
                 };
               }
 
-              index += 1;
-              getData(subParts[index].metrics, subParts[index].dimensions);
-
               return prevState;
             });
           })
@@ -67,9 +71,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ data }) => {
               loaded: true,
             });
           });
-      };
-
-      getData(subParts[index].metrics, subParts[index].dimensions);
+      });
     }, timeout);
   }, []);
 

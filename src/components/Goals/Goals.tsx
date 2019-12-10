@@ -14,8 +14,8 @@ import * as T from './Goals.types';
 const { parts } = config;
 const glossary: { [key: string]: string } = config.glossary;
 
-const Goals: React.FunctionComponent<T.IGoalsProps> = ({ data }) => {
-  const { counter, dateFrom, dateTo, token, goals } = data;
+const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
+  const { counter, dateFrom, dateTo, token, goals } = appState;
   const thisPart = parts.goals;
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.IGoalsState>({

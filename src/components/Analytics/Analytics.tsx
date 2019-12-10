@@ -8,8 +8,14 @@ import Visits from '../Visits';
 import * as s from './Analytics.css';
 import * as T from './Analytics.types';
 
-const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ data }) => {
-  const { reportName, counter, dateFrom, dateTo, token } = data;
+const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => {
+  const analyticsCont = React.useRef<HTMLElement>(null);
+  const { reportName, dateFrom, dateTo } = appState;
+
+  React.useEffect(() => {
+    const { current } = analyticsCont;
+    if (current) current.scrollIntoView();
+  });
 
   return (
     <Container maxWidth="md">
@@ -18,7 +24,7 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ data }) => {
           {reportName}
         </Typography>
 
-        <section className={s.lead}>
+        <section className={s.lead} ref={analyticsCont}>
           <Typography component="h2" variant="h6">
             Введение
           </Typography>
@@ -38,11 +44,11 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ data }) => {
           </Typography>
         </section>
 
-        <Visits data={{ ...data }} />
+        <Visits appState={{ ...appState }} />
 
-        {Boolean(data.goals.length) && <Goals data={{ ...data }} />}
+        {Boolean(appState.goals.length) && <Goals appState={{ ...appState }} />}
 
-        <Popular data={{ counter, dateFrom, dateTo, token }} />
+        <Popular appState={{ ...appState }} />
       </Paper>
     </Container>
   );

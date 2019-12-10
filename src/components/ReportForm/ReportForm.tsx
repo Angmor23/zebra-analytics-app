@@ -92,6 +92,19 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = ({
             />
           </div>
 
+          {/* Номер счетчика */}
+          <div className={s.formRow}>
+            <TextField
+              fullWidth
+              id="urlFilter"
+              label="Фильтр по части URL (например, /en/)"
+              margin="normal"
+              name="urlFilter"
+              onChange={onChangeFormField}
+              variant="outlined"
+            />
+          </div>
+
           {/* Даты начала формирования, конца формирования и раскрытия отчета */}
           <div className={classNames(s.formRow, s.formRowFlex)}>
             <TextField

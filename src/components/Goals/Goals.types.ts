@@ -1,17 +1,10 @@
-import { IGoal } from '../../containers/App/App.types';
+import { IAppState } from '../../containers/App/App.types';
 export { IGoal } from '../../containers/App/App.types';
 import { IApiDataItem } from '../../types';
 export { IApiDataItem } from '../../types';
 
 export interface IGoalsProps {
-  data: {
-    counter: string;
-    dateFrom: string;
-    dateTo: string;
-    goals: IGoal[];
-    reportName: string;
-    token: string;
-  };
+  appState: IAppState;
 }
 
 export interface IGoalsState {

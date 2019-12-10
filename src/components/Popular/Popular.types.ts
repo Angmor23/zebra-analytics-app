@@ -1,10 +1,7 @@
+import { IAppState } from '../../containers/App/App.types';
+
 export interface IPopularProps {
-  data: {
-    counter: string;
-    dateFrom: string;
-    dateTo: string;
-    token: string;
-  };
+  appState: IAppState;
 }
 
 export interface IPopularState {

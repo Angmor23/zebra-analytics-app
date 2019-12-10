@@ -13,8 +13,8 @@ import * as T from './Visits.types';
 
 const { parts } = config;
 
-const Visits: React.FunctionComponent<T.IVisitsProps> = ({ data }) => {
-  const { counter, dateFrom, dateTo, token } = data;
+const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
+  const { counter, dateFrom, dateTo, token, urlFilter } = appState;
   const thisPart = parts.visits;
   const { subParts, timeout = 0 } = thisPart;
   const glossary: { [key: string]: string } = config.glossary;
@@ -28,8 +28,17 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ data }) => {
     setTimeout(() => {
       let index = 0;
       const indexOfLast = subParts.length - 1;
-      const getData = (m: string[], f: string) => {
-        fetchAPI('', counter, dateFrom, dateTo, '', f, m, token)
+      const getData = (mtrc: string[], f: string) => {
+        let filters = '';
+        if (f && urlFilter) {
+          filters = `${f} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (!f && urlFilter) {
+          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (f && !urlFilter) {
+          filters = f;
+        }
+
+        fetchAPI('', counter, dateFrom, dateTo, '', filters, mtrc, token)
           .then(apiJSON => {
             const isLast = index === indexOfLast;
             const apiData: T.IApiDataItem[] = apiJSON.data;

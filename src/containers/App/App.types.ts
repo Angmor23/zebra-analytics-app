@@ -1,15 +1,16 @@
 export interface IAppState {
+  contacts: string;
+  counter: string;
+  created: string;
+  dateFrom: string;
+  dateTo: string;
   goals: IGoal[];
-  contacts?: string;
-  counter?: string;
-  created?: string;
-  dateFrom?: string;
-  dateTo?: string;
   lang: 'RU' | 'EN';
-  opening?: string;
-  reportName?: string;
-  token: string;
+  opening: string;
+  reportName: string;
   saved: boolean;
+  token: string;
+  urlFilter: string;
 }
 
 export interface IGoal {

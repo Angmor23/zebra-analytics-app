@@ -1,14 +1,9 @@
+import { IAppState } from '../../containers/App/App.types';
 import { IApiDataItem } from '../../types';
 export { IApiDataItem } from '../../types';
 
 export interface IVisitsProps {
-  data: {
-    counter: string;
-    dateFrom: string;
-    dateTo: string;
-    reportName: string;
-    token: string;
-  };
+  appState: IAppState;
 }
 
 export interface IVisitsState {
