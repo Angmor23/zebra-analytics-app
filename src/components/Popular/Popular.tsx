@@ -84,6 +84,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
               {thisPart.name}
             </Typography>
             {thisPart.subParts.map((subPart, n: number) => {
+              const bodyDataArray = state.dataArray[n] || [];
               return (
                 <Table key={`${thisPart.name}_${subPart.name}`}>
                   <TableHead>
@@ -99,15 +100,19 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
                   <TableBody>
                     {/* Выводим строки популярных страниц */
-                    state.dataArray[n].map((dataItem, i: number) => {
-                      return (
-                        <TableRow key={i}>
-                          <TableCell>{i + 1}</TableCell>
-                          <TableCell>{dataItem.dimensions[0].name}</TableCell>
-                          <TableCell>{aSum(dataItem.metrics)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    bodyDataArray.length ? (
+                      bodyDataArray.map((dataItem, i: number) => {
+                        return (
+                          <TableRow key={`goals-row-${i}`}>
+                            <TableCell>{i + 1}</TableCell>
+                            <TableCell>{dataItem.dimensions[0].name}</TableCell>
+                            <TableCell>{aSum(dataItem.metrics)}</TableCell>
+                          </TableRow>
+                        );
+                      })
+                    ) : (
+                      <div key={`goals-error-${n}`}>Произошла ошибка при ответе API</div>
+                    )}
                   </TableBody>
                 </Table>
               );

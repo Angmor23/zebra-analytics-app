@@ -15,7 +15,7 @@ const { parts } = config;
 const glossary: { [key: string]: string } = config.glossary;
 
 const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
-  const { counter, dateFrom, dateTo, token, goals } = appState;
+  const { counter, dateFrom, dateTo, token, goals, urlFilter } = appState;
   const thisPart = parts.goals;
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.IGoalsState>({
@@ -26,13 +26,22 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      let index = 0;
-      const indexOfLast = goals.length - 1;
-      const { metrics, filters } = subParts[0];
-      const getData = (g: T.IGoal) => {
-        fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${g.id}`, filters, metrics, token)
+      const subPart = subParts[0];
+      const { metrics } = subPart;
+
+      goals.forEach((goal, i) => {
+        let filters = '';
+        if (subPart.filters && urlFilter) {
+          filters = `${subPart.filters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (!subPart.filters && urlFilter) {
+          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
+        } else if (subPart.filters && !urlFilter) {
+          filters = subPart.filters;
+        }
+
+        fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${goal.id}`, filters, metrics, token)
           .then(apiJSON => {
-            const isLast = index === indexOfLast;
+            const isLast = i === goals.length - 1;
             const apiData: T.IApiDataItem[] = apiJSON.data;
 
             state.dataArray.push(apiData[0]);
@@ -46,9 +55,6 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
                 };
               }
 
-              index += 1;
-              getData(goals[index]);
-
               return prevState;
             });
           })
@@ -60,9 +66,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
               loaded: true,
             });
           });
-      };
-
-      getData(goals[0]);
+      });
     }, timeout);
   }, []);
 
