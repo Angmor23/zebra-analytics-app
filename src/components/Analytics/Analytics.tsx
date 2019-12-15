@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import Goals from '../Goals';
 import Popular from '../Popular';
+import TrafficSource from '../TrafficSource';
 import Visits from '../Visits';
 import * as s from './Analytics.css';
 import * as T from './Analytics.types';
@@ -49,6 +50,8 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
         {Boolean(appState.goals.length) && <Goals appState={{ ...appState }} />}
 
         <Popular appState={{ ...appState }} />
+
+        <TrafficSource appState={{ ...appState }} />
       </Paper>
     </Container>
   );
