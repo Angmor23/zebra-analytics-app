@@ -1,9 +1,9 @@
 import LinearProgress from '@material-ui/core/LinearProgress';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
@@ -18,69 +18,121 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
   const thisPart = parts.trafficSource;
   const { subParts, timeout = 0 } = thisPart;
   const [state, setState] = React.useState<T.ITrafficSourceState>({
-    dataNames: [],
+    dataArray: [],
     error: null,
     loaded: false,
-    values: [],
   });
+
+  const rows: T.IRow[] = [
+    {
+      dimensions: '',
+      filters: '',
+      name: 'Все пользователи',
+    },
+    {
+      dimensions: '',
+      filters: `ym:s:trafficSource=='referral'`,
+      name: 'Переходы по ссылкам на сайтах',
+    },
+    {
+      dimensions: '',
+      filters: `ym:s:trafficSource=='direct'`,
+      name: 'Прямые заходы',
+    },
+    {
+      dimensions: '',
+      filters: `ym:s:trafficSource=='internal'`,
+      name: 'Внутренние переходы',
+    },
+    {
+      dimensions: 'ym:s:searchEngine',
+      filters: `ym:s:trafficSource=='organic'`,
+      name: 'Переходы из поисковых систем',
+    },
+    {
+      dimensions: 'ym:s:searchEngine',
+      filters: `(ym:s:socialNetwork=='vkontakte' OR ym:s:socialNetwork=='facebook' OR ym:s:socialNetwork=='twitter')`,
+      name: 'Переходы из социальных сетей',
+    },
+    {
+      dimensions: 'ym:s:searchEngine',
+      filters: `ym:s:trafficSource=='messenger'`,
+      name: 'Переходы из мессенджеров',
+    },
+  ];
+
+  const tempDataArray: T.IDataArrayItem[] = [];
 
   React.useEffect(() => {
     setTimeout(() => {
-      let index = 0;
-      let onePercent = 0;
-      const indexOfLast = subParts.length - 1;
+      let tableIndex = 0;
+      const subPartsLength = subParts.length;
+      const rowsLength = rows.length;
 
-      const getData = () => {
-        const subPart = subParts[index];
-        const curMetrics: string[] = subPart.metrics;
-        const curFilters: string = subPart.filters;
+      const getTable = (subPart: T.ISubPart) => {
+        let rowIndex = 0;
+        let onePercent = 0;
+        tempDataArray[tableIndex] = { dataRows: [] };
 
-        let filters = '';
+        const getRow = (curRow: T.IRow) => {
+          setTimeout(() => {
+            const isLasiTable = tableIndex === subPartsLength - 1;
+            const isLastRow = rowIndex === rowsLength - 1;
+            const filters = [subPart.filters, curRow.filters]
+              .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
+              .filter(item => Boolean(item))
+              .join(' AND ');
 
-        if (curFilters && urlFilter) {
-          filters = `${curFilters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (!curFilters && urlFilter) {
-          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (curFilters && !urlFilter) {
-          filters = curFilters;
-        }
+            fetchAPI(
+              'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
+              counter,
+              dateFrom,
+              dateTo,
+              `&dimensions=${curRow.dimensions}`,
+              filters,
+              subPart.metrics,
+              token
+            )
+              .then(apiJSON => {
+                const value = aSum(apiJSON.totals);
+                if (!rowIndex) onePercent = value / 100;
+                const valuePercens = rowIndex
+                  ? (value / onePercent).toFixed(2).replace('.', ',')
+                  : '100';
 
-        fetchAPI('', counter, dateFrom, dateTo, '', filters, curMetrics, token)
-          .then(apiJSON => {
-            const isLast = index === indexOfLast;
-            const value = aSum(apiJSON.totals[0]);
-            if (!index) onePercent = value / 100;
-            const valuePercens = index ? value / onePercent : 100;
+                tempDataArray[tableIndex].dataRows.push([curRow.name, valuePercens]);
 
-            setState(prevState => {
-              state.dataNames.push(subPart.dataName);
-              state.values.push(valuePercens);
-
-              if (isLast) {
-                return {
+                if (isLastRow) {
+                  tableIndex += 1;
+                  if (!isLasiTable) {
+                    getTable(subParts[tableIndex]);
+                  } else {
+                    setState({
+                      dataArray: [...tempDataArray],
+                      error: null,
+                      loaded: true,
+                    });
+                  }
+                } else {
+                  rowIndex += 1;
+                  getRow(rows[rowIndex]);
+                }
+              })
+              .catch(error => {
+                window.console.error(error);
+                setState({
                   ...state,
-                  error: null,
+                  error: `Ошибка при загрузке таблицы "${thisPart.name}"`,
                   loaded: true,
-                };
-              }
+                });
+              });
+          }, 100);
+        };
 
-              index += 1;
-              getData();
-
-              return prevState;
-            });
-          })
-          .catch(error => {
-            window.console.error(error);
-            setState({
-              ...state,
-              error: `Ошибка при загрузке таблицы "${thisPart.name}"`,
-              loaded: true,
-            });
-          });
+        getRow(rows[rowIndex]);
       };
 
-      getData();
+      getTable(subParts[tableIndex]);
     }, timeout);
   }, []);
 
@@ -92,11 +144,30 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
             <Typography className={s.caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
+
             {thisPart.subParts.map((subPart, n: number) => {
               return (
-                <div key={n}>
-                  <span>{subPart.name}</span>:<span>{state.values[n]}</span>
-                </div>
+                <Table key={`${thisPart.name}_${subPart.name}`}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Источник ({subPart.name})</TableCell>
+                      <TableCell>Пользователи, (%)</TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {state.dataArray[n].dataRows.map((row, rowIndex) => {
+                      return (
+                        Boolean(rowIndex) && (
+                          <TableRow key={`table${n}_row-${rowIndex}`}>
+                            <TableCell>{row[0]}</TableCell>
+                            <TableCell>{row[1]}</TableCell>
+                          </TableRow>
+                        )
+                      );
+                    })}
+                  </TableBody>
+                </Table>
               );
             })}
           </section>

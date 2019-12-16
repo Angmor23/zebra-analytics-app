@@ -83,6 +83,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
             <Typography className={s.caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
+
             {thisPart.subParts.map((subPart, n: number) => {
               const bodyDataArray = state.dataArray[n] || [];
               return (
@@ -90,11 +91,8 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>#</TableCell>
-                      <TableCell>Страница</TableCell>
-                      <TableCell>
-                        <div className={s.bold}>{subPart.name}</div>
-                        Просмотров
-                      </TableCell>
+                      <TableCell>Страница ({subPart.name})</TableCell>
+                      <TableCell>Просмотров</TableCell>
                     </TableRow>
                   </TableHead>
 

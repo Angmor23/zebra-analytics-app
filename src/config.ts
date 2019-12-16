@@ -57,37 +57,15 @@ export const config = {
     trafficSource: {
       name: 'Источник трафика',
       subParts: [
-        // Первый запрос - получаем 100% визитов
         {
-          dataName: 'allUsers',
           filters: '',
           metrics: ['ym:s:visits', 'ym:s:users'],
           name: 'Все пользователи',
         },
         {
-          dataName: 'referralUsers',
-          filters: `ym:s:trafficSource=='referral'`,
+          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
           metrics: ['ym:s:visits', 'ym:s:users'],
-          name: 'Переходы по ссылкам на сайтах',
-        },
-        {
-          dataName: 'directUsers',
-          filters: `ym:s:trafficSource=='direct'`,
-          metrics: ['ym:s:visits', 'ym:s:users'],
-          name: 'Прямые заходы',
-        },
-        {
-          dataName: 'directUsers',
-          filters: `ym:s:trafficSource=='internal'`,
-          metrics: ['ym:s:visits', 'ym:s:users'],
-          name: 'Внутренние переходы',
-        },
-        {
-          dataName: 'directUsers',
-          dimensions: ['ym:s:searchEngine'],
-          filters: `ym:s:trafficSource=='organic'`,
-          metrics: ['ym:s:visits', 'ym:s:users'],
-          name: 'Переходы из поисковых систем',
+          name: 'Ядро',
         },
       ],
       timeout: 3000,
