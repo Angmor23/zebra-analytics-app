@@ -50,13 +50,13 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
       name: 'Переходы из поисковых систем',
     },
     {
-      dimensions: 'ym:s:searchEngine',
-      filters: `(ym:s:socialNetwork=='vkontakte' OR ym:s:socialNetwork=='facebook' OR ym:s:socialNetwork=='twitter')`,
+      dimensions: 'ym:s:lastsignSocialNetwork',
+      filters: '',
       name: 'Переходы из социальных сетей',
     },
     {
-      dimensions: 'ym:s:searchEngine',
-      filters: `ym:s:trafficSource=='messenger'`,
+      dimensions: 'ym:s:lastsignMessenger',
+      filters: '',
       name: 'Переходы из мессенджеров',
     },
   ];

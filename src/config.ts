@@ -59,12 +59,12 @@ export const config = {
       subParts: [
         {
           filters: '',
-          metrics: ['ym:s:visits', 'ym:s:users'],
+          metrics: ['ym:s:users'],
           name: 'Все пользователи',
         },
         {
           filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
-          metrics: ['ym:s:visits', 'ym:s:users'],
+          metrics: ['ym:s:users'],
           name: 'Ядро',
         },
       ],
