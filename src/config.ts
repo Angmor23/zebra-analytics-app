@@ -31,7 +31,7 @@ export const config = {
           name: 'Все пользователи',
         },
       ],
-      timeout: 1000,
+      timeout: 500,
     },
     popular: {
       name: 'Популярные страницы',
@@ -47,6 +47,22 @@ export const config = {
           filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
           metrics: ['ym:pv:pageviews'],
           name: 'Ядро',
+        },
+      ],
+      timeout: 1000,
+    },
+    searchPhrases: {
+      name: 'Поисковые запросы',
+      subParts: [
+        {
+          filters: `ym:s:lastSearchEngineRoot =. ('Yandex','Google','Bing','Mail_ru')`,
+          name: 'Все посетители',
+          preset: 'sources_search_phrases',
+        },
+        {
+          filters: `ym:s:visitDuration > 120 AND ym:s:pageViews > 3 AND ym:s:lastSearchEngineRoot =. ('Yandex','Google','Bing','Mail_ru')`,
+          name: 'Ядро',
+          preset: 'sources_search_phrases',
         },
       ],
       timeout: 2000,
@@ -68,7 +84,7 @@ export const config = {
           name: 'Ядро',
         },
       ],
-      timeout: 3000,
+      timeout: 1500,
     },
     users: {
       name: 'Пользователи',
@@ -107,4 +123,5 @@ export const config = {
   popularPageRows: 10,
   respType: 'token',
   saveButtonText: 'OK',
+  searchPhrasesRows: 6,
 };

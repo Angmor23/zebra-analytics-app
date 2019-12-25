@@ -7,17 +7,17 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { aSum, fetchAPI } from '../../utils';
-import * as s from './Popular.css';
-import * as T from './Popular.types';
+import { fetchAPI } from '../../utils';
+import * as s from './SearchPhrases.css';
+import * as T from './SearchPhrases.types';
 
-const { parts, popularPageRows } = config;
+const { parts, searchPhrasesRows } = config;
 
-const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
+const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appState }) => {
   const { counter, dateFrom, dateTo, token, urlFilter } = appState;
-  const thisPart = parts.popular;
-  const { subParts, timeout = 0 } = thisPart;
-  const [state, setState] = React.useState<T.IPopularState>({
+  const thisPart = parts.searchPhrases;
+  const { subParts, timeout } = thisPart;
+  const [state, setState] = React.useState<T.ISearchPhrasesState>({
     dataArray: [],
     error: null,
     loaded: false,
@@ -25,31 +25,29 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      subParts.forEach((subPart, i) => {
-        const isLast = i === subParts.length - 1;
+      let index = 0;
+      const indexOfLast = subParts.length - 1;
 
-        // @TODO заменить на join массива
-        let filters = '';
-        if (subPart.filters && urlFilter) {
-          filters = `${subPart.filters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (!subPart.filters && urlFilter) {
-          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (subPart.filters && !urlFilter) {
-          filters = subPart.filters;
-        }
+      const getTable = () => {
+        const subPart = subParts[index];
+        const isLast = index === indexOfLast;
+        const filters = [subPart.filters]
+          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
+          .filter(item => Boolean(item))
+          .join(' AND ');
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
           counter,
           dateFrom,
           dateTo,
-          `&dimensions=${subPart.dimensions.join()}`,
+          `&preset=${subPart.preset}`,
           filters,
-          subPart.metrics,
+          [],
           token
         )
           .then(apiJSON => {
-            const apiData: T.IDataItem[] = apiJSON.data.slice(0, popularPageRows);
+            const apiData: T.IDataItem[] = apiJSON.data.slice(0, searchPhrasesRows);
 
             state.dataArray.push(apiData);
 
@@ -64,6 +62,11 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
               return prevState;
             });
+
+            if (!isLast) {
+              index += 1;
+              getTable();
+            }
           })
           .catch(error => {
             window.console.error(error);
@@ -73,7 +76,9 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
               loaded: true,
             });
           });
-      });
+      };
+
+      getTable();
     }, timeout);
   }, []);
 
@@ -87,37 +92,35 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
             </Typography>
 
             {thisPart.subParts.map((subPart, n: number) => {
-              const bodyDataArray = state.dataArray[n] || [];
+              const partDataArray = state.dataArray[n] || [];
 
-              if (!bodyDataArray.length) console.log(state);
-
-              return bodyDataArray.length ? (
+              return (
                 <Table key={`${thisPart.name}_${subPart.name}`}>
                   <TableHead>
                     <TableRow>
-                      <TableCell>#</TableCell>
-                      <TableCell>Страница ({subPart.name})</TableCell>
-                      <TableCell>Просмотров</TableCell>
+                      <TableCell>Запрос ({subPart.name})</TableCell>
+                      <TableCell className={s.tableCell}>Количество запросов</TableCell>
                     </TableRow>
                   </TableHead>
 
                   <TableBody>
-                    {/* Выводим строки популярных страниц */
-                    bodyDataArray.map((dataItem, i: number) => {
-                      return (
-                        <TableRow key={`goals-row-${i}`}>
-                          <TableCell>{i + 1}</TableCell>
-                          <TableCell>{dataItem.dimensions[0].name}</TableCell>
-                          <TableCell>{aSum(dataItem.metrics)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {partDataArray.length ? (
+                      partDataArray.map((dataItem, i: number) => {
+                        return (
+                          <TableRow key={`search-phrases-row-${i}`}>
+                            <TableCell>{dataItem.dimensions[0].name}</TableCell>
+                            <TableCell>{dataItem.metrics[0]}</TableCell>
+                          </TableRow>
+                        );
+                      })
+                    ) : (
+                      <TableRow key={`search-phrases-row-empty-${n}`}>
+                        <TableCell>–</TableCell>
+                        <TableCell>–</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
-              ) : (
-                <div key={`goals-error-${n}`} className={s.error}>
-                  Произошла ошибка при ответе API
-                </div>
               );
             })}
           </section>
@@ -134,4 +137,4 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
   );
 };
 
-export default Popular;
+export default SearchPhrases;

@@ -24,8 +24,10 @@ export const fetchAPI = async (
 ) => {
   // По-умолчанию берем url из конфига, но в редких кейсах (популярные страницы) нужно передать иной url
   const apiUrl = api || config.api;
+  const metricsParam = metrics.length ? `&metrics=${metrics.join()}` : '';
+  const filtersParams = filters ? `&filters=${filters}` : '';
   const response = await window.fetch(
-    `${apiUrl}&id=${counter}&date1=${dateFrom}&date2=${dateTo}&metrics=${metrics.join()}&filters=${filters}${extraParams}`,
+    `${apiUrl}&id=${counter}&date1=${dateFrom}&date2=${dateTo}${metricsParam}${filtersParams}${extraParams}`,
     {
       headers: {
         Authorization: `OAuth ${token}`,
