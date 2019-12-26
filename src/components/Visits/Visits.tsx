@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
 import { aSum, fetchAPI, getValueByMetric } from '../../utils';
+import * as commonStyles from '../../utils/styles.css';
 import * as s from './Visits.css';
 import * as T from './Visits.types';
 
@@ -28,7 +29,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
     setTimeout(() => {
       let index = 0;
       const indexOfLast = subParts.length - 1;
-      const getData = (mtrc: string[], f: string) => {
+      const getTable = (mtrc: string[], f: string) => {
         let filters = '';
         if (f && urlFilter) {
           filters = `${f} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
@@ -55,7 +56,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
               }
 
               index += 1;
-              getData(subParts[index].metrics, subParts[index].filters);
+              getTable(subParts[index].metrics, subParts[index].filters);
 
               return prevState;
             });
@@ -70,62 +71,60 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
           });
       };
 
-      getData(subParts[index].metrics, subParts[index].filters);
+      getTable(subParts[index].metrics, subParts[index].filters);
     }, timeout);
   }, []);
 
-  return (
-    <section>
-      {state.loaded ? (
-        !state.error ? (
-          <React.Fragment>
-            <Typography className={s.caption} component="h2" variant="h6">
-              {thisPart.name}
-            </Typography>
+  return state.loaded ? (
+    !state.error ? (
+      <section className={commonStyles.Show}>
+        <Typography className={s.Caption} component="h2" variant="h6">
+          {thisPart.name}
+        </Typography>
 
-            {thisPart.subParts.map((subPart, i: number) => {
-              const thisDataArray = state.dataArray[i];
-              const thisMetrics = thisDataArray.metrics;
+        {thisPart.subParts.map((subPart, i: number) => {
+          const thisDataArray = state.dataArray[i];
+          const thisMetrics = thisDataArray.metrics;
 
-              return (
-                <Table className={s.table} key={subPart.name}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{subPart.name}</TableCell>
-                      <TableCell>Показатели</TableCell>
+          return (
+            <Table className={s.Table} key={subPart.name}>
+              <TableHead className={s.TableHead}>
+                <TableRow>
+                  <TableCell>{subPart.name}</TableCell>
+                  <TableCell>Показатели</TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {subPart.metrics.map((metric, k: number) => {
+                  // Number of elements in current row
+                  const length = thisMetrics[k].length;
+
+                  // Sum of all elements in current row
+                  const total = aSum(thisMetrics[k]);
+
+                  return (
+                    <TableRow key={metric + i}>
+                      <TableCell>{glossary[metric]}</TableCell>
+                      <TableCell className={s.TableCell}>
+                        {getValueByMetric(length, total, metric)}
+                      </TableCell>
                     </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {subPart.metrics.map((metric, k: number) => {
-                      // Number of elements in current row
-                      const length = thisMetrics[k].length;
-
-                      // Sum of all elements in current row
-                      const total = aSum(thisMetrics[k]);
-
-                      return (
-                        <TableRow key={metric + i}>
-                          <TableCell>{glossary[metric]}</TableCell>
-                          <TableCell>{getValueByMetric(length, total, metric)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              );
-            })}
-          </React.Fragment>
-        ) : (
-          <div className={s.error}>{state.error}</div>
-        )
-      ) : (
-        <div className={s.loader}>
-          Загрзка таблицы {thisPart.name}
-          <LinearProgress />
-        </div>
-      )}
-    </section>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          );
+        })}
+      </section>
+    ) : (
+      <div className={s.Error}>{state.error}</div>
+    )
+  ) : (
+    <div className={s.Loader}>
+      <div className={s.LoaderText}>Загрзка таблицы {thisPart.name}</div>
+      <LinearProgress />
+    </div>
   );
 };
 

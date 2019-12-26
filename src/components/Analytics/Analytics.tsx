@@ -20,7 +20,7 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
   });
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Paper className={s.root}>
         <Typography component="h1" variant="h5">
           {reportName}

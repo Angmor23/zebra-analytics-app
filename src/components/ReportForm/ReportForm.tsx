@@ -27,8 +27,8 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = ({
   delGoal,
 }) => {
   return (
-    <Container maxWidth="md">
-      <Paper className={s.root}>
+    <Container maxWidth="lg" className={s.root}>
+      <Paper className={s.Paper}>
         <Typography component="h1" variant="h5">
           Настройки
         </Typography>

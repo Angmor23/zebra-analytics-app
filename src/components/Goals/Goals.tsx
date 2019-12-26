@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
 import { aSum, fetchAPI, getValueByMetric } from '../../utils';
+import * as commonStyles from '../../utils/styles.css';
 import * as s from './Goals.css';
 import * as T from './Goals.types';
 
@@ -30,14 +31,10 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
       const { metrics } = subPart;
 
       goals.forEach((goal, i) => {
-        let filters = '';
-        if (subPart.filters && urlFilter) {
-          filters = `${subPart.filters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (!subPart.filters && urlFilter) {
-          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (subPart.filters && !urlFilter) {
-          filters = subPart.filters;
-        }
+        const filters = [subPart.filters]
+          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
+          .filter(item => Boolean(item))
+          .join(' AND ');
 
         fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${goal.id}`, filters, metrics, token)
           .then(apiJSON => {
@@ -49,7 +46,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
             setState(prevState => {
               if (isLast) {
                 return {
-                  dataArray: [...state.dataArray],
+                  dataArray: state.dataArray,
                   error: null,
                   loaded: true,
                 };
@@ -74,15 +71,15 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
     <React.Fragment>
       {state.loaded ? (
         !state.error ? (
-          <section>
-            <Typography className={s.caption} component="h2" variant="h6">
+          <section className={commonStyles.Show}>
+            <Typography className={s.Caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
 
             {thisPart.subParts.map(subPart => {
               return (
                 <Table key={subPart.name}>
-                  <TableHead>
+                  <TableHead className={s.TableHead}>
                     <TableRow>
                       <TableCell>Цель</TableCell>
                       {/* Выводим названия столбцов по словарю метрик: */
@@ -96,13 +93,13 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
                     {/* Выводим строку цели, сначала название цели, а затем знацения метрик */
                     goals.map((goal, i: number) => {
                       return (
-                        <TableRow key={i}>
+                        <TableRow key={`goal-row-${i}`}>
                           <TableCell>{goal.name}</TableCell>
 
                           {/* Заполняем ячейки суммой значений (длина массива зависит от группировки по времени) */
                           state.dataArray[i].metrics.map((metric, k: number) => {
                             return (
-                              <TableCell key={k}>
+                              <TableCell key={`goal-cell-${k}`}>
                                 {getValueByMetric(metric.length, aSum(metric), subPart.metrics[k])}
                               </TableCell>
                             );
@@ -116,11 +113,11 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
             })}
           </section>
         ) : (
-          <div className={s.error}>{state.error}</div>
+          <div className={s.Error}>{state.error}</div>
         )
       ) : (
-        <div className={s.loader}>
-          Загрзка таблицы {thisPart.name}
+        <div className={s.Loader}>
+          <div className={s.LoaderText}>Загрзка таблицы {thisPart.name}</div>
           <LinearProgress />
         </div>
       )}

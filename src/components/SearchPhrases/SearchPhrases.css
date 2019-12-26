@@ -1,13 +1,28 @@
-.caption,
-.loader {
-  margin: 24px 0 !important;
+.Loader {
+  padding: 100px;
 }
 
-.error {
+.LoaderText {
+  margin-bottom: 12px;
+}
+
+.Caption {
+  margin: 24px 0 12px 0 !important;
+}
+
+.Error {
   color: red;
   margin: 24px 0;
 }
 
-.tableCell {
+.TableCell {
   width: 150px;
+}
+
+.TableHead {
+  background-color: #fffff0;
+}
+
+.Link {
+  color: var(--base-color);
 }

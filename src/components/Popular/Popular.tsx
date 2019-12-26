@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
 import { aSum, fetchAPI } from '../../utils';
+import * as commonStyles from '../../utils/styles.css';
 import * as s from './Popular.css';
 import * as T from './Popular.types';
 
@@ -25,18 +26,16 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      subParts.forEach((subPart, i) => {
-        const isLast = i === subParts.length - 1;
+      let index = 0;
+      const indexOfLast = subParts.length - 1;
 
-        // @TODO заменить на join массива
-        let filters = '';
-        if (subPart.filters && urlFilter) {
-          filters = `${subPart.filters} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (!subPart.filters && urlFilter) {
-          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (subPart.filters && !urlFilter) {
-          filters = subPart.filters;
-        }
+      const getTable = () => {
+        const subPart = subParts[index];
+        const isLast = index === indexOfLast;
+        const filters = [subPart.filters]
+          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
+          .filter(item => Boolean(item))
+          .join(' AND ');
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
@@ -62,6 +61,8 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
                 };
               }
 
+              index += 1;
+              getTable();
               return prevState;
             });
           })
@@ -73,7 +74,9 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
               loaded: true,
             });
           });
-      });
+      };
+
+      getTable();
     }, timeout);
   }, []);
 
@@ -81,8 +84,8 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
     <React.Fragment>
       {state.loaded ? (
         !state.error ? (
-          <section>
-            <Typography className={s.caption} component="h2" variant="h6">
+          <section className={commonStyles.Show}>
+            <Typography className={s.Caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
 
@@ -93,7 +96,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
               return bodyDataArray.length ? (
                 <Table key={`${thisPart.name}_${subPart.name}`}>
-                  <TableHead>
+                  <TableHead className={s.TableHead}>
                     <TableRow>
                       <TableCell>#</TableCell>
                       <TableCell>Страница ({subPart.name})</TableCell>
@@ -108,25 +111,25 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
                         <TableRow key={`goals-row-${i}`}>
                           <TableCell>{i + 1}</TableCell>
                           <TableCell>{dataItem.dimensions[0].name}</TableCell>
-                          <TableCell>{aSum(dataItem.metrics)}</TableCell>
+                          <TableCell className={s.TableCell}>{aSum(dataItem.metrics)}</TableCell>
                         </TableRow>
                       );
                     })}
                   </TableBody>
                 </Table>
               ) : (
-                <div key={`goals-error-${n}`} className={s.error}>
+                <div key={`goals-error-${n}`} className={s.Error}>
                   Произошла ошибка при ответе API
                 </div>
               );
             })}
           </section>
         ) : (
-          <div className={s.error}>{state.error}</div>
+          <div className={s.Error}>{state.error}</div>
         )
       ) : (
-        <div className={s.loader}>
-          Загрзка таблицы {thisPart.name}
+        <div className={s.Loader}>
+          <div className={s.LoaderTetx}>Загрзка таблицы {thisPart.name}</div>
           <LinearProgress />
         </div>
       )}

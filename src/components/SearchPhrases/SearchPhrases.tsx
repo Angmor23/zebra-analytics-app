@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
 import { fetchAPI } from '../../utils';
+import * as commonStyles from '../../utils/styles.css';
 import * as s from './SearchPhrases.css';
 import * as T from './SearchPhrases.types';
 
@@ -60,13 +61,10 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
                 };
               }
 
-              return prevState;
-            });
-
-            if (!isLast) {
               index += 1;
               getTable();
-            }
+              return prevState;
+            });
           })
           .catch(error => {
             window.console.error(error);
@@ -86,8 +84,8 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
     <React.Fragment>
       {state.loaded ? (
         !state.error ? (
-          <section>
-            <Typography className={s.caption} component="h2" variant="h6">
+          <section className={commonStyles.Show}>
+            <Typography className={s.Caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
 
@@ -96,10 +94,10 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
 
               return (
                 <Table key={`${thisPart.name}_${subPart.name}`}>
-                  <TableHead>
+                  <TableHead className={s.TableHead}>
                     <TableRow>
                       <TableCell>Запрос ({subPart.name})</TableCell>
-                      <TableCell className={s.tableCell}>Количество запросов</TableCell>
+                      <TableCell className={s.TableCell}>Количество запросов</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -108,7 +106,16 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
                       partDataArray.map((dataItem, i: number) => {
                         return (
                           <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>{dataItem.dimensions[0].name}</TableCell>
+                            <TableCell>
+                              <a
+                                className={s.Link}
+                                href={dataItem.dimensions[0].url}
+                                target="_blank"
+                                rel="noopener"
+                              >
+                                {dataItem.dimensions[0].name}
+                              </a>
+                            </TableCell>
                             <TableCell>{dataItem.metrics[0]}</TableCell>
                           </TableRow>
                         );
@@ -125,11 +132,11 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
             })}
           </section>
         ) : (
-          <div className={s.error}>{state.error}</div>
+          <div className={s.Error}>{state.error}</div>
         )
       ) : (
-        <div className={s.loader}>
-          Загрзка таблицы {thisPart.name}
+        <div className={s.Loader}>
+          <div className={s.LoaderText}>Загрзка таблицы {thisPart.name}</div>
           <LinearProgress />
         </div>
       )}

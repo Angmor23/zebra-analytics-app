@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
 import { aSum, fetchAPI } from '../../utils';
+import * as commonStyles from '../../utils/styles.css';
 import * as s from './TrafficSource.css';
 import * as T from './TrafficSource.types';
 
@@ -140,15 +141,15 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
     <React.Fragment>
       {state.loaded ? (
         !state.error ? (
-          <section>
-            <Typography className={s.caption} component="h2" variant="h6">
+          <section className={commonStyles.Show}>
+            <Typography className={s.Caption} component="h2" variant="h6">
               {thisPart.name}
             </Typography>
 
             {thisPart.subParts.map((subPart, n: number) => {
               return (
                 <Table key={`${thisPart.name}_${subPart.name}`}>
-                  <TableHead>
+                  <TableHead className={s.TableHead}>
                     <TableRow>
                       <TableCell>Источник ({subPart.name})</TableCell>
                       <TableCell>Пользователи, (%)</TableCell>
@@ -161,7 +162,7 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
                         Boolean(rowIndex) && (
                           <TableRow key={`table${n}_row-${rowIndex}`}>
                             <TableCell>{row[0]}</TableCell>
-                            <TableCell>{row[1]}</TableCell>
+                            <TableCell className={s.TableCell}>{row[1]}</TableCell>
                           </TableRow>
                         )
                       );
@@ -172,11 +173,11 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
             })}
           </section>
         ) : (
-          <div className={s.error}>{state.error}</div>
+          <div className={s.Error}>{state.error}</div>
         )
       ) : (
-        <div className={s.loader}>
-          Загрзка таблицы {thisPart.name}
+        <div className={s.Loader}>
+          <div className={s.LoaderText}>Загрзка таблицы {thisPart.name}</div>
           <LinearProgress />
         </div>
       )}
