@@ -1,6 +1,4 @@
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Container, Paper, Typography } from '@material-ui/core';
 import * as React from 'react';
 import Goals from '../Goals';
 import Popular from '../Popular';
@@ -20,7 +18,7 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
   });
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" component="section">
       <Paper className={s.root}>
         <Typography component="h1" variant="h5">
           {reportName}
@@ -31,19 +29,46 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
             Введение
           </Typography>
 
-          <Typography component="p" variant="body1">
-            • Отчет: {reportName}
-            <br />
-            • Данные отчета
-            <br />
-            — основаны на обобщенных результатах систем анализа пользовательской активности Яндекс
-            Метрика.
-            <br />— представлены за: с {dateFrom} по {dateTo}.<br />
-            — представлены в формате «как есть» без обработки, если не указано иное.
-            <br />
-            • Автор: АйТи-бюро «Зебра».
-            <br />• Тип отчета: базовый.
-          </Typography>
+          <ul>
+            <li>
+              <Typography variant="subtitle1" gutterBottom>
+                Отчет: {reportName}
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="subtitle1" gutterBottom>
+                Данные отчета
+              </Typography>
+              <ul>
+                <li>
+                  <Typography variant="body1" gutterBottom>
+                    основаны на обобщенных результатах систем анализа пользовательской активности
+                    Яндекс Метрика.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body1" gutterBottom>
+                    представлены за: с {dateFrom} по {dateTo}.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body1" gutterBottom>
+                    представлены в формате «как есть» без обработки, если не указано иное.
+                  </Typography>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <Typography variant="subtitle1" gutterBottom>
+                Автор: АйТи-бюро «Зебра».
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="subtitle1" gutterBottom>
+                Тип отчета: базовый.
+              </Typography>
+            </li>
+          </ul>
         </section>
 
         <Visits appState={{ ...appState }} />
