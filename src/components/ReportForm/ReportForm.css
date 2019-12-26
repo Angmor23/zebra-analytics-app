@@ -12,8 +12,12 @@
 
 .formRow {
   display: block;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+
+  & button {
+    margin-left: 12px;
+  }
 }
 
 .formRowFlex {

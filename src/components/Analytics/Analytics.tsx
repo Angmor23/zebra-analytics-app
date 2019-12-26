@@ -3,6 +3,7 @@ import * as React from 'react';
 import Goals from '../Goals';
 import Popular from '../Popular';
 import SearchPhrases from '../SearchPhrases';
+import Technology from '../Technology';
 import TrafficSource from '../TrafficSource';
 import Visits from '../Visits';
 import * as s from './Analytics.css';
@@ -80,6 +81,8 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
         <TrafficSource appState={{ ...appState }} />
 
         <SearchPhrases appState={{ ...appState }} />
+
+        <Technology appState={{ ...appState }} />
       </Paper>
     </Container>
   );

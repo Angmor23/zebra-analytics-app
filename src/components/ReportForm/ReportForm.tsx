@@ -177,12 +177,17 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = ({
             );
           })}
 
-          <Button fullWidth onClick={addGoal} type="button" variant="contained">
-            {addGoalButtonText}
-          </Button>
-
           <div className={classNames(s.formRow, s.formRowFlexEnd)}>
-            <Button color="primary" onClick={onSubmitOptions} type="button" variant="contained">
+            <Button onClick={addGoal} type="button" variant="contained" size="large">
+              {addGoalButtonText}
+            </Button>
+            <Button
+              color="primary"
+              onClick={onSubmitOptions}
+              type="button"
+              variant="contained"
+              size="large"
+            >
               {saveButtonText}
             </Button>
           </div>

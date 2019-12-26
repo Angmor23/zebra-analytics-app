@@ -69,6 +69,45 @@ export const config = {
     },
     technology: {
       name: 'Технологии',
+      subParts: [
+        {
+          dimensions: 'ym:s:deviceCategory',
+          filters: '',
+          metrics: ['ym:s:users'],
+          name: 'Устройства (Все посетители)',
+        },
+        {
+          dimensions: 'ym:s:deviceCategory',
+          filters: `ym:s:visitDuration > 120 AND ym:s:pageViews > 3`,
+          metrics: ['ym:s:users'],
+          name: 'Устройства (Ядро)',
+        },
+        {
+          dimensions: 'ym:s:browser',
+          filters: '',
+          metrics: ['ym:s:users'],
+          name: 'Браузеры (Все посетители)',
+        },
+        {
+          dimensions: 'ym:s:browser',
+          filters: `ym:s:visitDuration > 120 AND ym:s:pageViews > 3`,
+          metrics: ['ym:s:users'],
+          name: 'Браузеры (Ядро)',
+        },
+        {
+          dimensions: 'ym:s:screenWidth',
+          filters: '',
+          metrics: ['ym:s:users'],
+          name: 'Разрешение дисплея (Все посетители)',
+        },
+        {
+          dimensions: 'ym:s:screenWidth',
+          filters: `ym:s:visitDuration > 120 AND ym:s:pageViews > 3`,
+          metrics: ['ym:s:users'],
+          name: 'Разрешение дисплея (Ядро)',
+        },
+      ],
+      timeout: 2500,
     },
     trafficSource: {
       name: 'Источник трафика',
@@ -122,6 +161,7 @@ export const config = {
   },
   popularPageRows: 10,
   respType: 'token',
-  saveButtonText: 'OK',
+  saveButtonText: 'Получить отчет',
   searchPhrasesRows: 6,
+  technologyRows: 5,
 };

@@ -9,16 +9,16 @@ import * as React from 'react';
 import { config } from '../../config';
 import { fetchAPI } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
-import * as s from './SearchPhrases.css';
-import * as T from './SearchPhrases.types';
+import * as s from './Technology.css';
+import * as T from './Technology.types';
 
-const { parts, searchPhrasesRows } = config;
+const { parts, technologyRows } = config;
 
-const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appState }) => {
+const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) => {
   const { counter, dateFrom, dateTo, token, urlFilter } = appState;
-  const thisPart = parts.searchPhrases;
-  const { subParts, timeout } = thisPart;
-  const [state, setState] = React.useState<T.ISearchPhrasesState>({
+  const thisPart = parts.technology;
+  const { subParts, timeout = 0 } = thisPart;
+  const [state, setState] = React.useState<T.ITechnologyState>({
     dataArray: [],
     error: null,
     loaded: false,
@@ -31,6 +31,7 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
 
       const getTable = () => {
         const subPart = subParts[index];
+        const { metrics } = subPart;
         const isLast = index === indexOfLast;
         const filters = [subPart.filters]
           .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
@@ -42,13 +43,20 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
           counter,
           dateFrom,
           dateTo,
-          `&preset=${subPart.preset}`,
+          `&dimensions=${subPart.dimensions}`,
           filters,
-          [],
+          metrics,
           token
         )
           .then(apiJSON => {
-            const apiData: T.IDataItem[] = apiJSON.data.slice(0, searchPhrasesRows);
+            const { data, totals } = apiJSON;
+            const apiData: T.IDataItem[] = data.slice(0, technologyRows).map((row: T.IDataItem) => {
+              const value = (row.metrics[0] / (totals / 100)).toFixed(2);
+              return {
+                ...row,
+                metrics: [Number(value)],
+              };
+            });
 
             state.dataArray.push(apiData);
 
@@ -96,8 +104,8 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
                 <Table key={`${thisPart.name}_${subPart.name}`}>
                   <TableHead className={s.TableHead}>
                     <TableRow>
-                      <TableCell>Запрос ({subPart.name})</TableCell>
-                      <TableCell className={s.TableCell}>Количество запросов</TableCell>
+                      <TableCell>{subPart.name}</TableCell>
+                      <TableCell className={s.TableCell}>Доля, (%)</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -106,17 +114,8 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
                       partDataArray.map((dataItem, i: number) => {
                         return (
                           <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>
-                              <a
-                                className={s.Link}
-                                href={dataItem.dimensions[0].url}
-                                target="_blank"
-                                rel="noopener"
-                              >
-                                {dataItem.dimensions[0].name}
-                              </a>
-                            </TableCell>
-                            <TableCell>{dataItem.metrics[0]}</TableCell>
+                            <TableCell>{dataItem.dimensions[0].name}</TableCell>
+                            <TableCell>{String(dataItem.metrics[0]).replace('.', ',')}</TableCell>
                           </TableRow>
                         );
                       })
@@ -144,4 +143,4 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
   );
 };
 
-export default SearchPhrases;
+export default Technology;
