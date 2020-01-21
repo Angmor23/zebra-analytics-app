@@ -27,10 +27,13 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
 
   React.useEffect(() => {
     setTimeout(() => {
+      let index = 0;
+      const indexOfLast = goals.length - 1;
       const subPart = subParts[0];
       const { metrics } = subPart;
 
-      goals.forEach((goal, i) => {
+      const getTable = (goal: T.IGoal) => {
+        const isLast = index === indexOfLast;
         const filters = [subPart.filters]
           .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
           .filter(item => Boolean(item))
@@ -38,7 +41,6 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
 
         fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${goal.id}`, filters, metrics, token)
           .then(apiJSON => {
-            const isLast = i === goals.length - 1;
             const apiData: T.IApiDataItem[] = apiJSON.data;
 
             state.dataArray.push(apiData[0]);
@@ -52,6 +54,8 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
                 };
               }
 
+              index += 1;
+              getTable(goals[index]);
               return prevState;
             });
           })
@@ -63,7 +67,9 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
               loaded: true,
             });
           });
-      });
+      };
+
+      getTable(goals[index]);
     }, timeout);
   }, []);
 
