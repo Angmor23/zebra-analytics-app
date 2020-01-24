@@ -2,6 +2,7 @@ import { Container, Paper, Typography } from '@material-ui/core';
 import * as React from 'react';
 import Goals from '../Goals';
 import Popular from '../Popular';
+import Regions from '../Regions';
 import SearchPhrases from '../SearchPhrases';
 import Technology from '../Technology';
 import TrafficSource from '../TrafficSource';
@@ -83,6 +84,8 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
         <SearchPhrases appState={{ ...appState }} />
 
         <Technology appState={{ ...appState }} />
+
+        <Regions appState={{ ...appState }} />
       </Paper>
     </Container>
   );

@@ -51,6 +51,24 @@ export const config = {
       ],
       timeout: 1000,
     },
+    regions: {
+      name: 'География',
+      subParts: [
+        {
+          dimensions: 'ym:s:regionCountryName',
+          filters: '',
+          metrics: ['ym:s:users'],
+          name: 'Все посетители',
+        },
+        {
+          dimensions: 'ym:s:regionCountryName',
+          filters: `ym:s:visitDuration > 120 AND ym:s:pageViews > 3`,
+          metrics: ['ym:s:users'],
+          name: 'Ядро',
+        },
+      ],
+      timeout: 3000,
+    },
     searchPhrases: {
       name: 'Поисковые запросы',
       subParts: [
@@ -160,6 +178,7 @@ export const config = {
     },
   },
   popularPageRows: 10,
+  regionsRows: 10,
   respType: 'token',
   saveButtonText: 'Получить отчет',
   searchPhrasesRows: 6,

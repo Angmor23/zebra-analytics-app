@@ -9,26 +9,71 @@ import * as React from 'react';
 import { config } from '../../config';
 import { fetchAPI } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
-import * as s from './Technology.css';
-import * as T from './Technology.types';
+import * as s from './Regions.css';
+import * as T from './Regions.types';
 
-const technologyNames: {
+const regionsName: {
   [key: string]: string;
 } = {
-  PC: 'ПК',
-  Smartphones: 'Смартфоны',
-  TV: 'ТВ',
-  Tablets: 'Планшеты',
-  'Yandex Browser': 'Яндекс.Браузер',
+  Armenia: 'Армения',
+  Austria: 'Австрия',
+  Azerbaijan: 'Азербайджан',
+  Belarus: 'Беларусь',
+  Belgium: 'Бельгия',
+  Bulgaria: 'Болгария',
+  Canada: 'Канада',
+  China: 'Китай',
+  Cyprus: 'Кипр',
+  'Czech Republic': 'Чехия',
+  Estonia: 'Эстония',
+  Finland: 'Финляндия',
+  France: 'Франция',
+  Georgia: 'Грузия',
+  Germany: 'Германия',
+  Greece: 'Греция',
+  Hungary: 'Венгрия',
+  India: 'Индия',
+  Iraq: 'Ирак',
+  Ireland: 'Ирландия',
+  Israel: 'Израиль',
+  Italy: 'Италия',
+  Japan: 'Япония',
+  Kazakhstan: 'Казахстан',
+  Kyrgyzstan: 'Кыргызстан',
+  Latvia: 'Латвия',
+  Lithuania: 'Литва',
+  Moldova: 'Молдова',
+  Mongolia: 'Монголия',
+  Netherlands: 'Нидерланды',
+  Norway: 'Норвегия',
+  Poland: 'Польша',
+  Romania: 'Румыния',
+  Russia: 'Россия',
+  Serbia: 'Сербия',
+  Singapore: 'Сингапур',
+  'South Korea': 'Южная Корея',
+  Spain: 'Испания',
+  Sweden: 'Швеция',
+  Switzerland: 'Швейцария',
+  Tajikistan: 'Таджикистан',
+  Thailand: 'Таиланд',
+  Turkey: 'Индейка',
+  Turkmenistan: 'Туркменистан',
+  Ukraine: 'Украина',
+  'United Arab Emirates': 'Объединенные Арабские Эмираты',
+  'United Kingdom': 'Соединенное Королевство',
+  'United States': 'Соединенные Штаты',
+  Uzbekistan: 'Узбекистан',
+  Vietnam: 'Вьетнам',
 };
 
-const { parts, technologyRows } = config;
+const { parts, regionsRows } = config;
 
-const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) => {
+const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
   const { counter, dateFrom, dateTo, token, urlFilter, lang } = appState;
-  const thisPart = parts.technology;
+  const thisPart = parts.regions;
   const { subParts, timeout = 0 } = thisPart;
-  const [state, setState] = React.useState<T.ITechnologyState>({
+  const [state, setState] = React.useState<T.IRegionsState>({
     dataArray: [],
     error: null,
     loaded: false,
@@ -59,14 +104,8 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
           token
         )
           .then(apiJSON => {
-            const { data, totals } = apiJSON;
-            const apiData: T.IDataItem[] = data.slice(0, technologyRows).map((row: T.IDataItem) => {
-              const value = (row.metrics[0] / (totals / 100)).toFixed(2);
-              return {
-                ...row,
-                metrics: [Number(value)],
-              };
-            });
+            const { data } = apiJSON;
+            const apiData: T.IDataItem[] = data.slice(0, regionsRows);
 
             state.dataArray.push(apiData);
 
@@ -114,8 +153,8 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
                 <Table key={`${thisPart.name}_${subPart.name}`}>
                   <TableHead className={s.TableHead}>
                     <TableRow>
-                      <TableCell>{subPart.name}</TableCell>
-                      <TableCell className={s.TableCell}>Доля, (%)</TableCell>
+                      <TableCell>Страны ({subPart.name})</TableCell>
+                      <TableCell className={s.TableCell}>Посетители</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -125,9 +164,7 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
                         const vName = dataItem.dimensions[0].name;
                         return (
                           <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>
-                              {lang === 'RU' ? technologyNames[vName] || vName : vName}
-                            </TableCell>
+                            <TableCell>{lang === 'RU' ? regionsName[vName] : vName}</TableCell>
                             <TableCell>{String(dataItem.metrics[0]).replace('.', ',')}</TableCell>
                           </TableRow>
                         );
@@ -156,4 +193,4 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
   );
 };
 
-export default Technology;
+export default Regions;

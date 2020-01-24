@@ -21,7 +21,7 @@ module.exports = (env, argv) => {
 				compress: true,
 				https: true,
 				port: 9002,
-				// open: 'Google Chrome',
+				open: 'Google Chrome',
 			},
 			devtool: 'source-map',
 			module: {
