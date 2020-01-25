@@ -2,6 +2,7 @@ export const config = {
   addGoalButtonText: 'Добавить цель',
   api: 'https://api-metrika.yandex.net/stat/v1/data/bytime?accuracy=full&group=year',
   clientId: 'c1b491bd74e84df4b313d39846f27907',
+  downloadsRows: 10,
   getTokenText: 'Нет OAuth токена?',
   glossary: {
     'ym:s:avgVisitDurationSeconds': 'Время на сайте (минуты)',
@@ -17,6 +18,24 @@ export const config = {
   oauthFormTitle: 'OAuth Авторизация',
   oauthUrl: 'https://oauth.yandex.ru/authorize',
   parts: {
+    downloads: {
+      name: 'Загрузки файлов',
+      subParts: [
+        {
+          dimensions: ['ym:dl:title', 'ym:dl:URLPathFull'],
+          filters: '',
+          metrics: ['ym:dl:downloads', 'ym:dl:users'],
+          name: 'Все пользователи',
+        },
+        {
+          dimensions: ['ym:dl:title', 'ym:dl:URLPathFull'],
+          filters: 'ym:s:visitDuration > 120 AND ym:s:pageViews > 3',
+          metrics: ['ym:dl:downloads', 'ym:dl:users'],
+          name: 'Ядро',
+        },
+      ],
+      timeout: 3500,
+    },
     goals: {
       name: 'Цели',
       /* !!! Цели имеют только одни subPart, что бы избежать вложеных циклов !!! */

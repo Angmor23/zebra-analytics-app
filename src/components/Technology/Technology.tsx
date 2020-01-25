@@ -134,8 +134,8 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
                       })
                     ) : (
                       <TableRow key={`search-phrases-row-empty-${n}`}>
-                        <TableCell>(Нет данных)</TableCell>
-                        <TableCell>(Нет данных)</TableCell>
+                        <TableCell>Нет данных</TableCell>
+                        <TableCell />
                       </TableRow>
                     )}
                   </TableBody>

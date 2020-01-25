@@ -122,8 +122,8 @@ const SearchPhrases: React.FunctionComponent<T.ISearchPhrasesProps> = ({ appStat
                       })
                     ) : (
                       <TableRow key={`search-phrases-row-empty-${n}`}>
-                        <TableCell>(Нет данных)</TableCell>
-                        <TableCell>(Нет данных)</TableCell>
+                        <TableCell>Нет данных</TableCell>
+                        <TableCell />
                       </TableRow>
                     )}
                   </TableBody>

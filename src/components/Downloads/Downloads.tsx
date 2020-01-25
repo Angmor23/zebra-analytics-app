@@ -9,71 +9,16 @@ import * as React from 'react';
 import { config } from '../../config';
 import { fetchAPI } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
-import * as s from './Regions.css';
-import * as T from './Regions.types';
+import * as s from './Downloads.css';
+import * as T from './Downloads.types';
 
-const regionsName: {
-  [key: string]: string;
-} = {
-  Armenia: 'Армения',
-  Austria: 'Австрия',
-  Azerbaijan: 'Азербайджан',
-  Belarus: 'Беларусь',
-  Belgium: 'Бельгия',
-  Bulgaria: 'Болгария',
-  Canada: 'Канада',
-  China: 'Китай',
-  Cyprus: 'Кипр',
-  'Czech Republic': 'Чехия',
-  Estonia: 'Эстония',
-  Finland: 'Финляндия',
-  France: 'Франция',
-  Georgia: 'Грузия',
-  Germany: 'Германия',
-  Greece: 'Греция',
-  Hungary: 'Венгрия',
-  India: 'Индия',
-  Iraq: 'Ирак',
-  Ireland: 'Ирландия',
-  Israel: 'Израиль',
-  Italy: 'Италия',
-  Japan: 'Япония',
-  Kazakhstan: 'Казахстан',
-  Kyrgyzstan: 'Кыргызстан',
-  Latvia: 'Латвия',
-  Lithuania: 'Литва',
-  Moldova: 'Молдова',
-  Mongolia: 'Монголия',
-  Netherlands: 'Нидерланды',
-  Norway: 'Норвегия',
-  Poland: 'Польша',
-  Romania: 'Румыния',
-  Russia: 'Россия',
-  Serbia: 'Сербия',
-  Singapore: 'Сингапур',
-  'South Korea': 'Южная Корея',
-  Spain: 'Испания',
-  Sweden: 'Швеция',
-  Switzerland: 'Швейцария',
-  Tajikistan: 'Таджикистан',
-  Thailand: 'Таиланд',
-  Turkey: 'Индейка',
-  Turkmenistan: 'Туркменистан',
-  Ukraine: 'Украина',
-  'United Arab Emirates': 'Объединенные Арабские Эмираты',
-  'United Kingdom': 'Соединенное Королевство',
-  'United States': 'Соединенные Штаты',
-  Uzbekistan: 'Узбекистан',
-  Vietnam: 'Вьетнам',
-};
+const { parts, downloadsRows } = config;
 
-const { parts, regionsRows } = config;
-
-const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
-  const { counter, dateFrom, dateTo, token, urlFilter, lang } = appState;
-  const thisPart = parts.regions;
+const Downloads: React.FunctionComponent<T.IDownloadsProps> = ({ appState }) => {
+  const { counter, dateFrom, dateTo, token, urlFilter } = appState;
+  const thisPart = parts.downloads;
   const { subParts, timeout = 0 } = thisPart;
-  const [state, setState] = React.useState<T.IRegionsState>({
+  const [state, setState] = React.useState<T.IDownloadsState>({
     dataArray: [],
     error: null,
     loaded: false,
@@ -105,7 +50,7 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
         )
           .then(apiJSON => {
             const { data } = apiJSON;
-            const apiData: T.IDataItem[] = data.slice(0, regionsRows);
+            const apiData: T.IDataItem[] = data.slice(0, downloadsRows);
 
             state.dataArray.push(apiData);
 
@@ -153,7 +98,10 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
                 <Table key={`${thisPart.name}_${subPart.name}`}>
                   <TableHead className={s.TableHead}>
                     <TableRow>
-                      <TableCell>Страны ({subPart.name})</TableCell>
+                      <TableCell>#</TableCell>
+                      <TableCell>Заголовок ({subPart.name})</TableCell>
+                      <TableCell>Путь</TableCell>
+                      <TableCell className={s.TableCell}>Загрузки</TableCell>
                       <TableCell className={s.TableCell}>Посетители</TableCell>
                     </TableRow>
                   </TableHead>
@@ -162,16 +110,23 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
                     {partDataArray.length ? (
                       partDataArray.map((dataItem, i: number) => {
                         const vName = dataItem.dimensions[0].name;
+                        const vPath = dataItem.dimensions[1].name;
                         return (
                           <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>{lang === 'RU' ? regionsName[vName] : vName}</TableCell>
-                            <TableCell>{String(dataItem.metrics[0]).replace('.', ',')}</TableCell>
+                            <TableCell>{i + 1}</TableCell>
+                            <TableCell>{vName.replace('&nbsp;', ' ')}</TableCell>
+                            <TableCell>{vPath}</TableCell>
+                            <TableCell>{String(dataItem.metrics[0])}</TableCell>
+                            <TableCell>{String(dataItem.metrics[1])}</TableCell>
                           </TableRow>
                         );
                       })
                     ) : (
                       <TableRow key={`search-phrases-row-empty-${n}`}>
                         <TableCell>Нет данных</TableCell>
+                        <TableCell />
+                        <TableCell />
+                        <TableCell />
                         <TableCell />
                       </TableRow>
                     )}
@@ -193,4 +148,4 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
   );
 };
 
-export default Regions;
+export default Downloads;

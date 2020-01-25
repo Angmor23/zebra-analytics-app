@@ -1,5 +1,6 @@
 import { Container, Paper, Typography } from '@material-ui/core';
 import * as React from 'react';
+import Downloads from '../Downloads';
 import Goals from '../Goals';
 import Popular from '../Popular';
 import Regions from '../Regions';
@@ -86,6 +87,8 @@ const Analytics: React.FunctionComponent<T.IAnalyticsProps> = ({ appState }) => 
         <Technology appState={{ ...appState }} />
 
         <Regions appState={{ ...appState }} />
+
+        <Downloads appState={{ ...appState }} />
       </Paper>
     </Container>
   );
