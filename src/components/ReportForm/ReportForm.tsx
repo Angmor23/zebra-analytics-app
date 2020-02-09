@@ -97,7 +97,7 @@ const ReportForm: React.FunctionComponent<T.IReportFormProps> = ({
             <TextField
               fullWidth
               id="urlFilter"
-              label="Фильтр по части URL (например, /en/)"
+              label="Фильтр по части URL (например, */en/ или !*/ru/)"
               margin="normal"
               name="urlFilter"
               onChange={onChangeFormField}

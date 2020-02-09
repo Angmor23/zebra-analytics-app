@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { aSum, fetchAPI, getValueByMetric } from '../../utils';
+import { aSum, fetchAPI, getFilters, getValueByMetric } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Goals.css';
 import * as T from './Goals.types';
@@ -34,10 +34,7 @@ const Goals: React.FunctionComponent<T.IGoalsProps> = ({ appState }) => {
 
       const getTable = (goal: T.IGoal) => {
         const isLast = index === indexOfLast;
-        const filters = [subPart.filters]
-          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-          .filter(item => Boolean(item))
-          .join(' AND ');
+        const filters = getFilters(subPart.filters, urlFilter);
 
         fetchAPI('', counter, dateFrom, dateTo, `&goal_id=${goal.id}`, filters, metrics, token)
           .then(apiJSON => {

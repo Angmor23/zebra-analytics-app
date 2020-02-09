@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { aSum, fetchAPI, getValueByMetric } from '../../utils';
+import { fetchAPI, getFilters, getValueByMetric } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Visits.css';
 import * as T from './Visits.types';
@@ -20,9 +20,9 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
   const { subParts, timeout = 0 } = thisPart;
   const glossary: { [key: string]: string } = config.glossary;
   const [state, setState] = React.useState<T.IVisitsState>({
-    dataArray: [],
     error: null,
     loaded: false,
+    totals: [],
   });
 
   React.useEffect(() => {
@@ -30,27 +30,19 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
       let index = 0;
       const indexOfLast = subParts.length - 1;
       const getTable = (mtrc: string[], f: string) => {
-        let filters = '';
-        if (f && urlFilter) {
-          filters = `${f} AND EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (!f && urlFilter) {
-          filters = `EXISTS(ym:pv:URL=@'${urlFilter}')`;
-        } else if (f && !urlFilter) {
-          filters = f;
-        }
+        const filters = getFilters(f, urlFilter);
 
         fetchAPI('', counter, dateFrom, dateTo, '', filters, mtrc, token)
           .then(apiJSON => {
             const isLast = index === indexOfLast;
-            const apiData: T.IApiDataItem[] = apiJSON.data;
+            const totals: number[] = apiJSON.totals[0];
 
-            state.dataArray.push(apiData[0]);
+            state.totals.push(totals);
 
             setState(prevState => {
               if (isLast) {
                 return {
-                  dataArray: [...state.dataArray],
-                  error: null,
+                  ...state,
                   loaded: true,
                 };
               }
@@ -83,8 +75,7 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
         </Typography>
 
         {thisPart.subParts.map((subPart, i: number) => {
-          const thisDataArray = state.dataArray[i];
-          const thisMetrics = thisDataArray.metrics;
+          const thisTotals = state.totals[i];
 
           return (
             <Table className={s.Table} key={subPart.name}>
@@ -97,17 +88,14 @@ const Visits: React.FunctionComponent<T.IVisitsProps> = ({ appState }) => {
 
               <TableBody>
                 {subPart.metrics.map((metric, k: number) => {
-                  // Number of elements in current row
-                  const length = thisMetrics[k].length;
-
                   // Sum of all elements in current row
-                  const total = aSum(thisMetrics[k]);
+                  const total = thisTotals[k];
 
                   return (
                     <TableRow key={metric + i}>
                       <TableCell>{glossary[metric]}</TableCell>
                       <TableCell className={s.TableCell}>
-                        {getValueByMetric(length, total, metric)}
+                        {getValueByMetric(1, total, metric)}
                       </TableCell>
                     </TableRow>
                   );

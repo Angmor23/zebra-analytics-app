@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { aSum, fetchAPI } from '../../utils';
+import { aSum, fetchAPI, getFilters } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Popular.css';
 import * as T from './Popular.types';
@@ -24,6 +24,8 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
     loaded: false,
   });
 
+  const strings404 = ['404', 'page not found', 'cтраница не найдена'];
+
   React.useEffect(() => {
     setTimeout(() => {
       let index = 0;
@@ -32,10 +34,7 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
       const getTable = () => {
         const subPart = subParts[index];
         const isLast = index === indexOfLast;
-        const filters = [subPart.filters]
-          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-          .filter(item => Boolean(item))
-          .join(' AND ');
+        const filters = getFilters(subPart.filters, urlFilter);
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
@@ -48,7 +47,12 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
           token
         )
           .then(apiJSON => {
-            const apiData: T.IDataItem[] = apiJSON.data.slice(0, popularPageRows);
+            const apiData: T.IDataItem[] = apiJSON.data
+              .filter((dataItem: T.IDataItem) => {
+                const pageName = dataItem.dimensions[0].name.toLowerCase();
+                return !strings404.some(str => pageName.includes(str));
+              })
+              .slice(0, popularPageRows);
 
             state.dataArray.push(apiData);
 
@@ -91,8 +95,6 @@ const Popular: React.FunctionComponent<T.IPopularProps> = ({ appState }) => {
 
             {thisPart.subParts.map((subPart, n: number) => {
               const bodyDataArray = state.dataArray[n] || [];
-
-              if (!bodyDataArray.length) console.log(state);
 
               return bodyDataArray.length ? (
                 <Table key={`${thisPart.name}_${subPart.name}`}>

@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { fetchAPI } from '../../utils';
+import { fetchAPI, getFilters } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Downloads.css';
 import * as T from './Downloads.types';
@@ -33,10 +33,7 @@ const Downloads: React.FunctionComponent<T.IDownloadsProps> = ({ appState }) => 
         const subPart = subParts[index];
         const { metrics } = subPart;
         const isLast = index === indexOfLast;
-        const filters = [subPart.filters]
-          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-          .filter(item => Boolean(item))
-          .join(' AND ');
+        const filters = getFilters(subPart.filters, urlFilter);
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',

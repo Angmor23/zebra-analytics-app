@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "esnext",
 		"module": "esnext",
-		"lib": ["dom", "esnext"],
+		"lib": ["es2017", "dom", "scripthost"],
 		"allowJs": true,
 		"jsx": "react",
 		"sourceMap": true,

@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { fetchAPI } from '../../utils';
+import { fetchAPI, getFilters } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Technology.css';
 import * as T from './Technology.types';
@@ -15,11 +15,13 @@ import * as T from './Technology.types';
 const technologyNames: {
   [key: string]: string;
 } = {
+  'Google: mobile app': 'Google: мобильное приложение',
   PC: 'ПК',
   Smartphones: 'Смартфоны',
   TV: 'ТВ',
   Tablets: 'Планшеты',
   'Yandex Browser': 'Яндекс.Браузер',
+  'Yandex: mobile app': 'Яндекс: мобильное приложение',
 };
 
 const { parts, technologyRows } = config;
@@ -43,10 +45,7 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
         const subPart = subParts[index];
         const { metrics } = subPart;
         const isLast = index === indexOfLast;
-        const filters = [subPart.filters]
-          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-          .filter(item => Boolean(item))
-          .join(' AND ');
+        const filters = getFilters(subPart.filters, urlFilter);
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
@@ -111,35 +110,43 @@ const Technology: React.FunctionComponent<T.ITechnologyProps> = ({ appState }) =
               const partDataArray = state.dataArray[n] || [];
 
               return (
-                <Table key={`${thisPart.name}_${subPart.name}`}>
-                  <TableHead className={s.TableHead}>
-                    <TableRow>
-                      <TableCell>{subPart.name}</TableCell>
-                      <TableCell className={s.TableCell}>Доля, (%)</TableCell>
-                    </TableRow>
-                  </TableHead>
+                <React.Fragment key={`${thisPart.name}-${subPart.name}-${subPart.dimensions}`}>
+                  <Typography className={s.Caption} component="h3" variant="subtitle1">
+                    {subPart.subTitle}
+                  </Typography>
 
-                  <TableBody>
-                    {partDataArray.length ? (
-                      partDataArray.map((dataItem, i: number) => {
-                        const vName = dataItem.dimensions[0].name;
-                        return (
-                          <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>
-                              {lang === 'RU' ? technologyNames[vName] || vName : vName}
-                            </TableCell>
-                            <TableCell>{String(dataItem.metrics[0]).replace('.', ',')}</TableCell>
-                          </TableRow>
-                        );
-                      })
-                    ) : (
-                      <TableRow key={`search-phrases-row-empty-${n}`}>
-                        <TableCell>Нет данных</TableCell>
-                        <TableCell />
+                  <Table>
+                    <TableHead className={s.TableHead}>
+                      <TableRow>
+                        <TableCell>{subPart.name}</TableCell>
+                        <TableCell className={s.TableCell}>Доля</TableCell>
                       </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                    </TableHead>
+
+                    <TableBody>
+                      {partDataArray.length ? (
+                        partDataArray.map((dataItem, i: number) => {
+                          const vName = dataItem.dimensions[0].name;
+                          return (
+                            <TableRow key={`technology-row-${i}`}>
+                              <TableCell>
+                                {lang === 'RU' ? technologyNames[vName] || vName : vName}
+                              </TableCell>
+                              <TableCell>
+                                {String(dataItem.metrics[0]).replace('.', ',')} %
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow key={`technology-row-empty-${n}`}>
+                          <TableCell>Нет данных</TableCell>
+                          <TableCell />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </React.Fragment>
               );
             })}
           </section>

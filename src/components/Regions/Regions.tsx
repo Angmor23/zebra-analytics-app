@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { fetchAPI } from '../../utils';
+import { fetchAPI, getFilters } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './Regions.css';
 import * as T from './Regions.types';
@@ -15,49 +15,99 @@ import * as T from './Regions.types';
 const regionsName: {
   [key: string]: string;
 } = {
+  Abkhazia: 'Абхазия',
+  Albania: 'Албания',
+  Argentina: 'Аргентина',
   Armenia: 'Армения',
+  Australia: 'Австралия',
   Austria: 'Австрия',
   Azerbaijan: 'Азербайджан',
+  Bahrain: 'Бахрейн',
+  Bangladesh: 'Бангладеш',
   Belarus: 'Беларусь',
   Belgium: 'Бельгия',
+  'Bosnia and Herzegovina': 'Босния и Герцеговина',
+  Botswana: 'Ботсвана',
+  Brazil: 'Бразилия',
   Bulgaria: 'Болгария',
   Canada: 'Канада',
+  Chile: 'Чили',
   China: 'Китай',
+  Colombia: 'Колумбия',
+  'Costa Rica': 'Коста-Рика',
+  Croatia: 'Хорватия',
   Cyprus: 'Кипр',
   'Czech Republic': 'Чехия',
+  "Côte d'Ivoire": "Кот-д'Ивуар",
+  Denmark: 'Дания',
+  'Dominican Republic': 'Доминиканская Республика',
+  Ecuador: 'Эквадор',
+  Egypt: 'Египет',
   Estonia: 'Эстония',
+  Ethiopia: 'Эфиопия',
   Finland: 'Финляндия',
   France: 'Франция',
   Georgia: 'Грузия',
   Germany: 'Германия',
+  Ghana: 'Гана',
+  Gibraltar: 'Гибралтар',
   Greece: 'Греция',
   Hungary: 'Венгрия',
   India: 'Индия',
+  Indonesia: 'Индонезия',
+  Iran: 'Иран',
   Iraq: 'Ирак',
   Ireland: 'Ирландия',
   Israel: 'Израиль',
   Italy: 'Италия',
   Japan: 'Япония',
   Kazakhstan: 'Казахстан',
+  Kenya: 'Кения',
+  Kuwait: 'Кувейт',
   Kyrgyzstan: 'Кыргызстан',
   Latvia: 'Латвия',
+  Lebanon: 'Ливан',
   Lithuania: 'Литва',
+  Luxembourg: 'Люксембург',
+  Malta: 'Мальта',
+  Mauritius: 'Маврикий',
+  Mexico: 'Мексика',
   Moldova: 'Молдова',
   Mongolia: 'Монголия',
+  Montenegro: 'Черногория',
+  Morocco: 'Марокко',
+  Nepal: 'Непал',
   Netherlands: 'Нидерланды',
+  'New Zealand': 'Новая Зеландия',
+  Nigeria: 'Нигерия',
   Norway: 'Норвегия',
+  Oman: 'Оман',
+  Pakistan: 'Пакистан',
+  Peru: 'Перу',
+  Philippines: 'Филиппины',
   Poland: 'Польша',
+  Portugal: 'Португалия',
   Romania: 'Румыния',
   Russia: 'Россия',
+  Rwanda: 'Руанда',
+  'Saudi Arabia': 'Саудовская Аравия',
   Serbia: 'Сербия',
+  Seychelles: 'Сейшельские острова',
+  'Sierra Leone': 'Сьерра Леоне',
   Singapore: 'Сингапур',
+  Slovakia: 'Словакия',
+  Slovenia: 'Словения',
+  'South Africa': 'Южная Африка',
   'South Korea': 'Южная Корея',
   Spain: 'Испания',
+  'Sri Lanka': 'Шри-Ланка',
   Sweden: 'Швеция',
   Switzerland: 'Швейцария',
+  Syria: 'Сирия',
+  Taiwan: 'Тайвань',
   Tajikistan: 'Таджикистан',
   Thailand: 'Таиланд',
-  Turkey: 'Индейка',
+  Turkey: 'Турция',
   Turkmenistan: 'Туркменистан',
   Ukraine: 'Украина',
   'United Arab Emirates': 'Объединенные Арабские Эмираты',
@@ -88,10 +138,7 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
         const subPart = subParts[index];
         const { metrics } = subPart;
         const isLast = index === indexOfLast;
-        const filters = [subPart.filters]
-          .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-          .filter(item => Boolean(item))
-          .join(' AND ');
+        const filters = getFilters(subPart.filters, urlFilter);
 
         fetchAPI(
           'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',
@@ -164,7 +211,9 @@ const Regions: React.FunctionComponent<T.IRegionsProps> = ({ appState }) => {
                         const vName = dataItem.dimensions[0].name;
                         return (
                           <TableRow key={`search-phrases-row-${i}`}>
-                            <TableCell>{lang === 'RU' ? regionsName[vName] : vName}</TableCell>
+                            <TableCell>
+                              {lang === 'RU' ? regionsName[vName] || vName : vName}
+                            </TableCell>
                             <TableCell>{String(dataItem.metrics[0]).replace('.', ',')}</TableCell>
                           </TableRow>
                         );

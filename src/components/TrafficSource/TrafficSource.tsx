@@ -7,7 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { config } from '../../config';
-import { aSum, fetchAPI } from '../../utils';
+import { aSum, fetchAPI, getFilters } from '../../utils';
 import * as commonStyles from '../../utils/styles.css';
 import * as s from './TrafficSource.css';
 import * as T from './TrafficSource.types';
@@ -79,10 +79,7 @@ const TrafficSource: React.FunctionComponent<T.ITrafficSourceProps> = ({ appStat
           setTimeout(() => {
             const isLasiTable = tableIndex === subPartsLength - 1;
             const isLastRow = rowIndex === rowsLength - 1;
-            const filters = [subPart.filters, curRow.filters]
-              .concat(urlFilter ? `EXISTS(ym:pv:URL=@'${urlFilter}')` : [])
-              .filter(item => Boolean(item))
-              .join(' AND ');
+            const filters = getFilters([subPart.filters, curRow.filters], urlFilter);
 
             fetchAPI(
               'https://api-metrika.yandex.net/stat/v1/data?accuracy=full&group=year',

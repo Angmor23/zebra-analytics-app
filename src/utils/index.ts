@@ -2,7 +2,7 @@ import { config } from '../config';
 
 const getFormatTime = (time: number): string => {
   const min = Math.floor(time / 60);
-  const sec = String(Math.floor(time % 60)).padStart(2, '0');
+  const sec = (time % 60).toFixed().padStart(2, '0');
   return `${min}:${sec}`;
 };
 
@@ -44,11 +44,32 @@ export const getValueByMetric = (n: number, value: number, metric: string): stri
     result = getFormatTime(value / n);
   }
 
-  if (
-    ['ym:s:pageDepth', 'ym:s:bounceRate', 'ym:s:goal<goal_id>conversionRate'].indexOf(metric) > -1
-  ) {
+  if (metric === 'ym:s:bounceRate') {
+    result = `${(value / n).toFixed(1).replace('.', ',')} %`;
+  }
+
+  if (['ym:s:pageDepth', 'ym:s:goal<goal_id>conversionRate'].indexOf(metric) > -1) {
     result = (value / n).toFixed(2).replace('.', ',');
   }
 
   return result;
+};
+
+export const getFilters = (filter1: string | string[], urlFilter: string): string => {
+  let result = [];
+
+  const isNone = urlFilter[0] === '!';
+
+  if (Array.isArray(filter1)) {
+    result = filter1;
+  } else {
+    result.push(filter1);
+  }
+
+  return result
+    .concat(
+      urlFilter ? `(ym:pv:URL${isNone ? '!*' : '=*'}'${urlFilter.slice(Number(isNone))}')` : []
+    )
+    .filter(item => Boolean(item))
+    .join(' AND ');
 };
